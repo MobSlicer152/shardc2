@@ -4,14 +4,16 @@ cmake_minimum_required(VERSION 3.10)
 file(
     WRITE "${CMAKE_BINARY_DIR}/no_system_import_libs.cmake"
 [=[
-if (MSVC)        
+if (MSVC)
     set(CMAKE_CXX_STANDARD_LIBRARIES_INIT "%(AdditionalDependencies)")
 endif()
 ]=]
 )
 set(CMAKE_USER_MAKE_RULES_OVERRIDE "${CMAKE_BINARY_DIR}/no_system_import_libs.cmake")
 
-project(shardc2 VERSION 0.0.1 LANGUAGES C ASM_NASM)
+project(shardc2 VERSION 0.0.1)
+enable_language(C)
+enable_language(ASM_NASM)
 
 if(NOT CMAKE_BUILD_TYPE)
 	set(CMAKE_BUILD_TYPE Debug)
