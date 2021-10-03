@@ -1,8 +1,12 @@
 export
 
 # Directories
-ROOT=$(shell pwd)
-BINDIR:=$(ROOT)/bin
+ROOT = $(strip $(shell pwd))
+BINDIR := $(ROOT)/bin
+
+# Architecture and platform
+PLATFORM := $(strip $(guile (string-downcase "$(shell uname -s)")))
+ARCH := $(strip $(shell uname -m))
 
 # Basic tools
 CC := clang
@@ -10,7 +14,7 @@ LD := $(CC)
 AR := ar
 AS := nasm
 
-ifeq ($(SHELL),cmd)
+ifeq ($(strip $(SHELL)), cmd)
 	MKDIR := mkdir
 else
 	MKDIR := mkdir -p
@@ -29,11 +33,11 @@ LDFLAGS += -nostdlib
 .PHONY: all clean clean-build help info list targets libc test
 
 # Rules
-clean:
-	@printf "\tCLEAN\t$(BINDIR) $(shell find -type f -regex '.*\.o')\n"
-
 all: libc test
-clean-build: clean libc test
+
+CLEANFILES = $(BINDIR) $(shell find -type f -regex '.*\.o')
+clean:
+	@printf "\tCLEAN\t$(CLEANFILES)\n"
 
 # It's downright evil not to have a target like this in your Makefile
 help:
@@ -61,6 +65,8 @@ help:
 	@printf "CPPFLAGS\t=\t$(CPPFLAGS)\n"
 	@printf "LDFLAGS\t\t=\t$(LDFLAGS)\n"
 	@printf "CLEANFILES\t=\t$(CLEANFILES)\n"
+	@printf "PLATFORM\t=\t$(PLATFORM)\n"
+	@printf "ARCH\t\t=\t$(ARCH)\n"
 
 info: help
 list: help
@@ -71,9 +77,9 @@ $(BINDIR):
 
 libc: $(BINDIR)
 	@printf "\tDESCEND\tlibc\n"
-	@$(MAKE) -C $(ROOT)/libc libc
+	@$(MAKE) -q -C $(ROOT)/libc libc
 
 test: $(BINDIR) libc
 	@printf "\tDESCEND\ttest\n"
-	@$(MAKE) -C $(ROOT)/test test
+	@$(MAKE) -q -C $(ROOT)/test test
 
