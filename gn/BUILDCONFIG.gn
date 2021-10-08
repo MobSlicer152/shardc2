@@ -1,0 +1,37 @@
+if (target_os == "") {
+  target_os = host_os
+}
+
+if (target_cpu == "") {
+  target_cpu = host_cpu
+}
+
+if (current_cpu == "") {
+  current_cpu = target_cpu
+}
+
+if (current_os == "") {
+  current_os = target_os
+}
+
+is_windows =
+    host_os == "windows" && current_os == "windows" && target_os == "windows"
+is_mac = host_os == "mac" && current_os == "mac" && target_os == "mac"
+is_linux = host_os == "linux" && current_os == "linux" && target_os == "linux"
+
+_shared_binary_flags = [ "//gn:compiler_defaults" ]
+
+set_defaults("executable") {
+  configs = _shared_binary_flags
+  configs += [ "//gn:executable_ldconfig" ]
+}
+
+set_defaults("static_library") {
+  configs = _shared_binary_flags
+}
+
+if (is_windows) {
+  set_default_toolchain("/gn/toolchain:msvc")
+} else {
+  set_default_toolchain("//gn/toolchain:clang")
+}

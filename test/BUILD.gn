@@ -1,0 +1,5 @@
+executable("test") {
+  sources = [ "test.c" ]
+
+  deps = [ "//libc:libc" ]
+}

@@ -1,0 +1,41 @@
+static_library("libc") {
+  include_dirs = [ "include" ]
+  defines = []
+
+  sources = [
+    "include/internal/crt0.h",
+    "include/stdlib.h",
+    "include/string.h",
+    "src/stdlib/convert.c",
+    "src/stdlib/search.c",
+    "src/string/compare.c",
+    "src/string/mem.c",
+  ]
+
+  if (is_windows) {
+    sources += [
+      "include/internal/win32/defs.h",
+      "include/internal/win32/ldr.h",
+      "src/win32/crt0.c",
+      "src/win32/ldr.c",
+      "src/win32/rtc.c",
+    ]
+  } else if (is_linux) {
+    sources += [ "src/linux/startup/init.c" ]
+  }
+
+  if (current_cpu == "x64") {
+    defines += [ "_X86_64" ]
+    sources += [ "src/stdlib/x86_64/cpu.c" ]
+
+    if (is_windows) {
+      sources += [ "src/stdlib/x86_64/cpuid.asm" ]
+    } else if (is_linux) {
+      sources += [
+        "src/linux/x86_64/crt0.S",
+        "src/linux/x86_64/stack.c",
+        "src/stdlib/x86_64/cpuid.S",
+      ]
+    }
+  }
+}

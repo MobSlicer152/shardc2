@@ -1,0 +1,32 @@
+config("compiler_defaults") {
+  if (current_os == "windows") {
+    cflags = [
+      "/Wall",
+      "/O2",
+      "/Zi",
+      "/Zl",
+      "/Zo",
+      "/std:c17",
+    ]
+  } else {
+    cflags = [
+      "-ffreestanding",
+      "-fPIC",
+      "-O2",
+      "-g",
+      "-Wall",
+      "-Wextra",
+    ]
+  }
+}
+
+config("executable_ldconfig") {
+  if (current_os == "windowS") {
+    ldflags = [
+      "/nodefaultlib",
+      "/subsystem:console",
+    ]
+  } else {
+    ldflags = [ "-nostdlib" ]
+  }
+}
