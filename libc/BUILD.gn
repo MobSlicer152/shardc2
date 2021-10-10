@@ -1,5 +1,5 @@
 static_library("libc") {
-  include_dirs = [ "include" ]
+  include_dirs = [ "//deps/include", "include" ]
   defines = []
 
   sources = [
@@ -12,7 +12,7 @@ static_library("libc") {
     "src/string/mem.c",
   ]
 
-  if (is_windows) {
+  if (is_win) {
     sources += [
       "include/internal/win32/defs.h",
       "include/internal/win32/ldr.h",
@@ -28,7 +28,7 @@ static_library("libc") {
     defines += [ "_X86_64" ]
     sources += [ "src/stdlib/x86_64/cpu.c" ]
 
-    if (is_windows) {
+    if (is_win) {
       sources += [ "src/stdlib/x86_64/cpuid.asm" ]
     } else if (is_linux) {
       sources += [

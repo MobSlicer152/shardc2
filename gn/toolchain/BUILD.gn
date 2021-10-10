@@ -84,23 +84,23 @@ if (current_cpu == "x64") {
 toolchain("msvc") {
   tool("cc") {
     depfile = "{{output}}.d"
-    command = "cl /sourceDependencies $depfile {{defines}} {{include_dirs}} {{cflags}} {{cflags_c}} /c /Tc {{source}} /Fo {{output}}"
+    command = "cl /nologo /sourceDependencies $depfile {{defines}} {{include_dirs}} {{cflags}} {{cflags_c}} /c /Tc {{source}} /FS /Fo{{output}}"
     depsformat = "msvc"
     description = "CC {{output}}"
     outputs =
-        [ "{{source_out_dir}}/{{target_output_name}}.{{source_name_part}}.o" ]
+        [ "{{source_out_dir}}/{{target_output_name}}.{{source_name_part}}.obj" ]
   }
   tool("asm") {
     # For MSVC use ml(64)
     depfile = "{{output}}.d"
-    command = "$asm {{defines}} {{include_dirs}} {{asmflags}} /c {{source}} /Fo {{output}}"
+    command = "$asm /nologo {{defines}} {{include_dirs}} {{asmflags}} /Fo{{output}} /c {{source}}"
     depsformat = "msvc"
     description = "ASM {{output}}"
     outputs =
-        [ "{{source_out_dir}}/{{target_output_name}}.{{source_name_part}}.o" ]
+        [ "{{source_out_dir}}/{{target_output_name}}.{{source_name_part}}.obj" ]
   }
   tool("alink") {
-    command = "del /f/q {{output}} && lib {{output}} {{inputs}}"
+    command = "lib /nologo /out:{{output}} {{inputs}}"
     description = "AR {{target_output_name}}{{output_extension}}"
     outputs =
         [ "{{target_out_dir}}/{{target_output_name}}{{output_extension}}" ]
@@ -110,7 +110,8 @@ toolchain("msvc") {
   tool("solink") {
     soname = "{{target_output_name}}{{output_extension}}"  # e.g. "libfoo.so".
     sofile = "{{output_dir}}/$soname"
-    command = "link {{ldflags}} /out $sofile"
+    rspfile = "${soname}.rsp"
+    command = "link /nologo {{ldflags}} /out $sofile @$rspfile"
     description = "SOLINK $soname"
 
     # Use this for {{output_extension}} expansions unless a target manually
@@ -125,17 +126,23 @@ toolchain("msvc") {
     link_output = sofile
     depend_output = sofile
     output_prefix = ""
+    rspfile_content =
+        "{{libs}} {{solibs}} {{inputs_newline}} {{ldflags}} {{rlibs}}"
   }
   tool("link") {
     outfile = "{{target_output_name}}{{output_extension}}"
-    command = "link {{ldflags}} /out $outfile {{libs}}"
+    rspfile = "${outfile}.rsp"
+    command = "link /nologo {{ldflags}} /out:$outfile {{libs}} @$rspfile"
     description = "LINK $outfile"
+
+    default_output_extension = ".exe"
+
     default_output_dir = "{{root_out_dir}}"
     rspfile_content = "{{inputs}}"
     outputs = [ outfile ]
   }
   tool("stamp") {
-    command = "type nul >> {{output}}"
+    command = "cmd /c type nul >> {{output}}"
     description = "STAMP {{output}}"
   }
   tool("copy") {

@@ -1,8 +1,8 @@
 .section .text
 
-.global __cpuid
-.type __cpuid, @function
-__cpuid:
+.global _cpuid
+type _cpuid, @function
+_cpuid:
 	pushq %rbp
 	movq %rsp, %rbp
 	pushq %rbx

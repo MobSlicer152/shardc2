@@ -1,7 +1,6 @@
 config("compiler_defaults") {
-  if (current_os == "windows") {
+  if (is_win) {
     cflags = [
-      "/Wall",
       "/O2",
       "/Zi",
       "/Zl",
@@ -21,7 +20,7 @@ config("compiler_defaults") {
 }
 
 config("executable_ldconfig") {
-  if (current_os == "windowS") {
+  if (is_win) {
     ldflags = [
       "/nodefaultlib",
       "/subsystem:console",

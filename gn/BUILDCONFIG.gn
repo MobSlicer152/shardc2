@@ -14,8 +14,8 @@ if (current_os == "") {
   current_os = target_os
 }
 
-is_windows =
-    host_os == "windows" && current_os == "windows" && target_os == "windows"
+is_win =
+    host_os == "win" && current_os == "win" && target_os == "win"
 is_mac = host_os == "mac" && current_os == "mac" && target_os == "mac"
 is_linux = host_os == "linux" && current_os == "linux" && target_os == "linux"
 
@@ -30,8 +30,8 @@ set_defaults("static_library") {
   configs = _shared_binary_flags
 }
 
-if (is_windows) {
-  set_default_toolchain("/gn/toolchain:msvc")
+if (is_win) {
+  set_default_toolchain("//gn/toolchain:msvc")
 } else {
   set_default_toolchain("//gn/toolchain:clang")
 }
