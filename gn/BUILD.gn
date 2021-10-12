@@ -24,6 +24,7 @@ config("executable_ldconfig") {
     ldflags = [
       "/nodefaultlib",
       "/subsystem:console",
+      "/debug"
     ]
   } else {
     ldflags = [ "-nostdlib" ]

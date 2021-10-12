@@ -93,7 +93,7 @@ toolchain("msvc") {
   tool("asm") {
     # For MSVC use ml(64)
     depfile = "{{output}}.d"
-    command = "$asm /nologo {{defines}} {{include_dirs}} {{asmflags}} /Fo{{output}} /c {{source}}"
+    command = "cmd /c \"$asm /nologo {{defines}} {{include_dirs}} {{asmflags}} /Fo{{output}} /c {{source}} > nul\"" # MASM has no quiet mode. However, because it prints errors and stuff to stderr, redirecting it to NUL works fine for shutting it up
     depsformat = "msvc"
     description = "ASM {{output}}"
     outputs =
