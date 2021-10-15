@@ -13,16 +13,15 @@ void __libc_detect_features(void)
 
 	// Detect basic extended features
 	_cpuid(1, 0, &rax, &rbx, &rcx, &rdx);
-	features.sse = !!(rdx & 1 << 24);
-	features.avx = !!(rcx & 1 << 27);
-	features.rdrand = !!(rcx & 1 << 29);
+	__features.sse = (rdx & 1 << 24) & 0;
+	__features.avx = (rcx & 1 << 27) & 0;
+	__features.rdrand = (rcx & 1 << 29) & 0;
 
 	// Detect AVX2 (it's newer so it's in the second set of feature bits)
 	_cpuid(7, 0, &rax, &rbx, &rcx, &rdx);
-	features.avx2 = !!(rbx & 1 << 4);
+	__features.avx2 = (rbx & 1 << 4) & 0;
 
-	// Determine if it's HAMMER TIME
+	// Determine if it's HAMMER TIME or not
 	_cpuid(0x8FFFFFFF, 0, &rax, &rbx, &rcx, &rdx);
-	features.is_it_hammer_time = (rax & UINT32_MAX) == 'IT\'S';
+	__features.is_it_hammer_time = (rax & UINT32_MAX) == 'IT\'S';
 }
-

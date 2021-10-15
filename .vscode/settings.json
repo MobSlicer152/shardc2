@@ -1,0 +1,17 @@
+{
+	"C_Cpp.default.includePath": [
+		"${workspaceFolder}/deps/include",
+		"${workspaceFolder}/libc/include"
+	],
+	"files.associations": {
+		"wchar.h": "c",
+		"stdint.h": "c",
+		"stddef.h": "c",
+		"corecrt.h": "c",
+		"vcruntime.h": "c",
+		"defs.h": "c",
+		"phnt_windows.h": "c",
+		"ldr.h": "c",
+		"stdlib.h": "c"
+	}
+}

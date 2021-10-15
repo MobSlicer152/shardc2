@@ -1,5 +1,9 @@
 #pragma once
 
+#include <stdint.h>
+#include <stdlib.h>
+#include <wchar.h>
+
 // Set the PHNT headers to target Windows 7, it's the best version
 #define PHNT_VERSION PHNT_WIN7
 #include <phnt_windows.h>

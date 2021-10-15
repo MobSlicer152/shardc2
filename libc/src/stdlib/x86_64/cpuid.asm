@@ -1,10 +1,12 @@
+OPTION PROLOGUE:NONE
+
 .code
 
 _cpuid PROC
 	push rbp
 	mov rbp, rsp
-	push rbx ; RBX is non-volatile
-
+	push rbx
+	
 	; Place parameters in the right registers
 	mov rax, rcx
 	mov rcx, rdx
@@ -12,18 +14,16 @@ _cpuid PROC
 	; Call cpuid
 	cpuid
 
-	; Pop the last two parameters
-	pop r10
-	pop r11
-
 	; Move the results into the pointers
 	mov QWORD PTR [r8], rax
 	mov QWORD PTR [r9], rbx
+	lea r10, QWORD PTR [rbp + 24]
 	mov QWORD PTR [r10], rdx
-	mov QWORD PTR [r11], rcx
+	lea r10, QWORD PTR [rbp + 16]
+	mov QWORD PTR [r10], rcx
 
 	pop rbx
-	pop rbp
+	leave
 	ret
 _cpuid ENDP
 PUBLIC _cpuid

@@ -17,7 +17,7 @@ struct __cpu_features {
 };
 
 // Detected CPU features for use by memset and stuff
-extern struct __cpu_features features;
+extern struct __cpu_features __features;
 
 // Detect CPU features
 extern void __libc_detect_features(void);

@@ -27,6 +27,6 @@ _cpuid:
 	movq %rdx, (%r9)
 
 	popq %rbx
+	movq %rbp, %rsp
 	popq %rbp
 	ret
-

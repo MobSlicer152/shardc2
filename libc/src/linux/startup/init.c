@@ -1,6 +1,6 @@
 #include "internal/crt0.h"
 
-struct __cpu_features features;
+struct __cpu_features __features;
 
 void __libc_linux_init(int argc, char **argv)
 {
@@ -12,4 +12,3 @@ void __libc_linux_init(int argc, char **argv)
 	// Call main
 	ret = main(argc, argv);
 }
-

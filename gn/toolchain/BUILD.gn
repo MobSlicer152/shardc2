@@ -93,7 +93,7 @@ toolchain("msvc") {
   tool("asm") {
     # For MSVC use ml(64)
     depfile = "{{output}}.d"
-    command = "cmd /c \"$asm /nologo {{defines}} {{include_dirs}} {{asmflags}} /Fo{{output}} /c {{source}} > nul\"" # MASM has no quiet mode. However, because it prints errors and stuff to stderr, redirecting it to NUL works fine for shutting it up
+    command = "$asm /nologo {{defines}} {{include_dirs}} {{asmflags}} /Fo{{output}} /c {{source}}"
     depsformat = "msvc"
     description = "ASM {{output}}"
     outputs =
@@ -143,6 +143,83 @@ toolchain("msvc") {
   }
   tool("stamp") {
     command = "cmd /c type nul >> {{output}}"
+    description = "STAMP {{output}}"
+  }
+  tool("copy") {
+    command = "xcopy /q/y {{source}} {{output}}"
+    description = "COPY {{source}} {{output}}"
+  }
+}
+
+toolchain("stuff") {
+  tool("cc") {
+    depfile = "{{output}}.d"
+    command = "tcc -MD -MF $depfile {{defines}} {{include_dirs}} {{cflags}} {{cflags_c}} -c {{source}} -o {{output}}"
+    depsformat = "gcc"
+    description = "CC {{output}}"
+    outputs =
+        [ "{{source_out_dir}}/{{target_output_name}}.{{source_name_part}}.o" ]
+  }
+  tool("asm") {
+    # For Clang we can just use the C compiler to compile assembly.
+    depfile = "{{output}}.d"
+    command = "tcc -MD -MF $depfile {{defines}} {{include_dirs}} {{asmflags}} -xa -c {{source}} -o {{output}}"
+    depsformat = "gcc"
+    description = "ASM {{output}}"
+    outputs =
+        [ "{{source_out_dir}}/{{target_output_name}}.{{source_name_part}}.o" ]
+  }
+  tool("alink") {
+    command = "del /f/q {{output}} && tcc -ar rcs {{output}} {{inputs}}"
+    description = "AR {{target_output_name}}{{output_extension}}"
+    outputs =
+        [ "{{target_out_dir}}/{{target_output_name}}{{output_extension}}" ]
+    default_output_extension = ".lib"
+    output_prefix = ""
+  }
+  tool("solink") {
+    soname = "{{target_output_name}}{{output_extension}}"  # e.g. "libfoo.so".
+    sofile = "{{output_dir}}/$soname"
+    rspfile = soname + ".rsp"
+    if (is_mac) {
+      os_specific_option = "-install_name @executable_path/$sofile"
+      rspfile_content = "{{inputs}} {{solibs}} {{libs}}"
+    } else {
+      os_specific_option = "-Wl,-soname=$soname"
+      rspfile_content = "-Wl,--whole-archive {{inputs}} {{solibs}} -Wl,--no-whole-archive {{libs}}"
+    }
+    command =
+        "tcc -shared {{ldflags}} -o $sofile $os_specific_option @$rspfile"
+    description = "SOLINK $soname"
+
+    # Use this for {{output_extension}} expansions unless a target manually
+    # overrides it (in which case {{output_extension}} will be what the target
+    # specifies).
+    default_output_extension = ".dll"
+
+    # Use this for {{output_dir}} expansions unless a target manually overrides
+    # it (in which case {{output_dir}} will be what the target specifies).
+    default_output_dir = "{{root_out_dir}}"
+    outputs = [ sofile ]
+    link_output = sofile
+    depend_output = sofile
+    output_prefix = ""
+  }
+  tool("link") {
+    outfile = "{{target_output_name}}{{output_extension}}"
+    rspfile = "$outfile.rsp"
+    if (is_mac) {
+      command = "tcc {{ldflags}} -o $outfile @$rspfile {{solibs}} {{libs}}"
+    } else {
+      command = "tcc {{ldflags}} -o $outfile -Wl,--start-group @$rspfile {{solibs}} -Wl,--end-group {{libs}}"
+    }
+    description = "LINK $outfile"
+    default_output_dir = "{{root_out_dir}}"
+    rspfile_content = "{{inputs}}"
+    outputs = [ outfile ]
+  }
+  tool("stamp") {
+    command = "cmd /c type NUL >> {{output}}"
     description = "STAMP {{output}}"
   }
   tool("copy") {

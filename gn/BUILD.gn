@@ -1,8 +1,6 @@
 config("compiler_defaults") {
   if (is_win) {
     cflags = [
-      "/O2",
-      "/Zi",
       "/Zl",
       "/Zo",
       "/std:c17",
@@ -11,11 +9,23 @@ config("compiler_defaults") {
     cflags = [
       "-ffreestanding",
       "-fPIC",
-      "-O2",
-      "-g",
       "-Wall",
       "-Wextra",
     ]
+  }
+
+  if (is_debug) {
+    if (is_win) {
+      cflags += [ "/Zi" ]
+    } else {
+      cflags += [ "-g" ]
+    }
+  } else {
+    if (is_win) {
+      cflags += [ "/O2" ]
+    } else {
+      cflags += [ "-O2" ]
+    }
   }
 }
 
@@ -24,9 +34,14 @@ config("executable_ldconfig") {
     ldflags = [
       "/nodefaultlib",
       "/subsystem:console",
-      "/debug"
     ]
   } else {
     ldflags = [ "-nostdlib" ]
+  }
+
+  if (is_debug) {
+    if (is_win) {
+      ldflags += [ "/debug" ]
+    }
   }
 }

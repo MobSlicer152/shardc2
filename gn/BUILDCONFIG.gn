@@ -19,6 +19,10 @@ is_win =
 is_mac = host_os == "mac" && current_os == "mac" && target_os == "mac"
 is_linux = host_os == "linux" && current_os == "linux" && target_os == "linux"
 
+declare_args() {
+  is_debug = true # Default to debug
+}
+
 _shared_binary_flags = [ "//gn:compiler_defaults" ]
 
 set_defaults("executable") {

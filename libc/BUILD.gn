@@ -1,5 +1,8 @@
 static_library("libc") {
-  include_dirs = [ "//deps/include", "include" ]
+  include_dirs = [
+    "//deps/include",
+    "include",
+  ]
   defines = []
 
   sources = [
@@ -7,9 +10,14 @@ static_library("libc") {
     "include/stdlib.h",
     "include/string.h",
     "src/stdlib/convert.c",
+    "src/stdlib/exit.c",
     "src/stdlib/search.c",
     "src/string/compare.c",
     "src/string/mem.c",
+    "src/string/misc.c",
+    "src/wchar/case.c",
+    "src/wchar/compare.c",
+    "src/wchar/misc.c",
   ]
 
   if (is_win) {
@@ -19,6 +27,7 @@ static_library("libc") {
       "src/win32/crt0.c",
       "src/win32/ldr.c",
       "src/win32/rtc.c",
+      "src/win32/stdlib/exit.c",
     ]
   } else if (is_linux) {
     sources += [ "src/linux/startup/init.c" ]
@@ -26,15 +35,18 @@ static_library("libc") {
 
   if (current_cpu == "x64") {
     defines += [ "_X86_64" ]
-    sources += [ "src/stdlib/x86_64/cpu.c" ]
+    sources += [
+      "src/stdlib/x86_64/cpu.c",
+      "src/stdlib/x86_64/cpuid.asm",
+      "src/string/x86_64/memset.asm",
+    ]
 
     if (is_win) {
-      sources += [ "src/stdlib/x86_64/cpuid.asm" ]
+      sources += []
     } else if (is_linux) {
       sources += [
-        "src/linux/x86_64/crt0.S",
+        "src/linux/x86_64/crt0.asm",
         "src/linux/x86_64/stack.c",
-        "src/stdlib/x86_64/cpuid.S",
       ]
     }
   }
