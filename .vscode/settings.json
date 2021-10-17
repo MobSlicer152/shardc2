@@ -3,6 +3,9 @@
 		"${workspaceFolder}/deps/include",
 		"${workspaceFolder}/libc/include"
 	],
+	"C_Cpp.default.defines": [
+		"_X86_64"
+	],
 	"files.associations": {
 		"wchar.h": "c",
 		"stdint.h": "c",
@@ -12,6 +15,7 @@
 		"defs.h": "c",
 		"phnt_windows.h": "c",
 		"ldr.h": "c",
-		"stdlib.h": "c"
+		"stdlib.h": "c",
+		"crt0.h": "c"
 	}
 }

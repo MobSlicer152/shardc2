@@ -28,9 +28,11 @@ memset:
 	mov r12, rcx
 
 	; Check how many bytes can be set at once
-	
-	
-	jmp SHORT byte_copy ; Byte copy, as a last resort
+	cmp __features.avx, 1
+	jnz ymm_setup
+	cmp __features.sse, 1
+	jnz xmm_setup
+	jmp SHORT byte_copy
 
 	; Setup for different loops
 	ymm_setup:

@@ -17,10 +17,10 @@ _cpuid PROC
 	; Move the results into the pointers
 	mov QWORD PTR [r8], rax
 	mov QWORD PTR [r9], rbx
-	lea r10, QWORD PTR [rbp + 24]
-	mov QWORD PTR [r10], rdx
-	lea r10, QWORD PTR [rbp + 16]
+	mov r10, QWORD PTR [rbp + 48]
 	mov QWORD PTR [r10], rcx
+	mov r10, QWORD PTR [rbp + 56]
+	mov QWORD PTR [r10], rdx
 
 	pop rbx
 	leave
