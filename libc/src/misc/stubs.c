@@ -1,4 +1,4 @@
-// General definitions for Windows functions
+// Compiler-specific stub functions
 //
 // Copyright 2021 MobSlicer152
 // This file is part of Shard C Library 2
@@ -15,23 +15,18 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#pragma once
+#if !defined __GNUC__ && !defined _MSC_VER
+void __stack_chk_fail(void)
+{
+}
+#endif // !__GNUC__ && !_MSC_VER
 
-#include <stdint.h>
-#include <stdlib.h>
-#include <wchar.h>
+#ifdef _MSC_VER
+void _RTC_InitBase(void)
+{
+}
 
-// Set the PHNT headers to target Windows 7, it's the best version
-#define PHNT_VERSION PHNT_WIN7
-#include <phnt_windows.h>
-#include <phnt.h>
-
-// The current process's PEB, defined in win32/crt0.c
-extern PEB *__peb;
-
-// Get a pointer to the PEB
-#ifdef _M_IX86_
-#define _PEB_LOC (PEB *const)__readfsdword(0x30)
-#elif defined _M_X64
-#define _PEB_LOC (PEB *const)__readgsqword(0x60)
+void _RTC_Shutdown(void)
+{
+}
 #endif

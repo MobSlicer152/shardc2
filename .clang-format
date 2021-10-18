@@ -2,6 +2,8 @@
 #
 # clang-format configuration file. Intended for clang-format >= 4.
 #
+# Linux kernel clang-format file
+#
 # For more information, see:
 #
 #   Documentation/process/clang-format.rst
