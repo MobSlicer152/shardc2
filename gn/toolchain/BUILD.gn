@@ -93,7 +93,7 @@ toolchain("msvc") {
   tool("asm") {
     # For MSVC use ml(64)
     depfile = "{{output}}.d"
-    command = "$asm /nologo {{defines}} {{include_dirs}} {{asmflags}} /Fo{{output}} /c {{source}}"
+    command = "cmd /c \"$asm /nologo {{defines}} {{include_dirs}} {{asmflags}} /Fo{{output}} /c /Ta{{source}} | findstr /v /i assembling & echo > nul\""
     depsformat = "msvc"
     description = "ASM {{output}}"
     outputs =

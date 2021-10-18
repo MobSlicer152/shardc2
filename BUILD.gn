@@ -1,6 +1,6 @@
 group("stuff") {
   deps = [
-    "//libc",
+    "//libc:c",
     "//test",
   ]
 }

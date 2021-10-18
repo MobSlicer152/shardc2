@@ -6,7 +6,7 @@ void *bsearch(const void *key, const void *base, size_t n, size_t size,
 	      int (*cmp)(const void *guess, const void *key))
 {
 	int diff;
-	uint8_t *base2 = base;
+	uint8_t *base2 = (uint8_t *)base;
 	ptrdiff_t min;
 	ptrdiff_t mid;
 	ptrdiff_t max;

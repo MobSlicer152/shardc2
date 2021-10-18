@@ -1,4 +1,4 @@
-static_library("libc") {
+static_library("c") {
   include_dirs = [
     "//deps/include",
     "include",
