@@ -22,6 +22,5 @@
 _Noreturn void _Exit(int status)
 {
 	// Make sure this process is cleaned up
-	while (1)
-		__NtTerminateProcess(-1, status);
+	__NtTerminateProcess(-1, status);
 }

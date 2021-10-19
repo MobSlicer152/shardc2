@@ -104,6 +104,7 @@ uint32_t __get_symbol_ordinal(void *base, IMAGE_EXPORT_DIRECTORY *edt,
 			      const char *name)
 {
 	uint32_t *npt;
+	uint32_t *eot;
 	int cmp;
 	uint32_t max;
 	uint32_t mid;
@@ -111,6 +112,7 @@ uint32_t __get_symbol_ordinal(void *base, IMAGE_EXPORT_DIRECTORY *edt,
 
 	// Get the name pointer table and export ordinal table
 	npt = (uint32_t *)((uint8_t *)base + edt->AddressOfNames);
+	eot = (uint32_t *)((uint8_t *)base + edt->AddressOfNameOrdinals);
 
 	// Do a binary search for the function
 	min = 0;
@@ -123,7 +125,7 @@ uint32_t __get_symbol_ordinal(void *base, IMAGE_EXPORT_DIRECTORY *edt,
 		else if (cmp > 0)
 			max = mid - 1;
 		else
-			return mid + edt->Base + 1;
+			return mid + edt->Base;
 	}
 
 	return UINT32_MAX;
@@ -134,12 +136,13 @@ void *__load_symbol(void *base, IMAGE_EXPORT_DIRECTORY *edt, const char *symbol)
 	ANSI_STRING name;
 	void *func = NULL;
 	uint32_t *funcs = (uint32_t *)(__ntdll + edt->AddressOfFunctions);
+	uint32_t ord;
 
 	if (!__LdrGetProcedureAddress) {
 		// Look up the function in the table of functions
+		ord = __get_symbol_ordinal(base, edt, symbol) - edt->Base - 1 + 9;
 		func = (uint8_t *)base +
-		       funcs[__get_symbol_ordinal(base, edt, symbol) -
-			     edt->Base];
+		       funcs[ord];
 	} else {
 		// Fill the string
 		name.Buffer = (char *)symbol;

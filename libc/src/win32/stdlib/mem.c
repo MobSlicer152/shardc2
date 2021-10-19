@@ -24,14 +24,14 @@
 
 void *__alloc(size_t size)
 {
-	long status;
+	uint32_t status;
 	uint8_t *ret = NULL;
 	size_t real_size = size + sizeof(struct __basic_alloc_info);
 	struct __basic_alloc_info *info;
 
-	// Check if there's even enough free memory
-	if (real_size > __get_free_mem())
-		return NULL;
+	// Check if there's even enough free memory (doesn't work on Windows 7)
+	//if (real_size > __get_free_mem())
+	//	return NULL;
 
 	// Request the memory
 	status = __NtAllocateVirtualMemory(-1, &ret, 0, &real_size, MEM_COMMIT | MEM_RESERVE,
@@ -80,7 +80,7 @@ void __free(void *chunk)
 					      sizeof(struct __basic_alloc_info));
 	size_t size;
 
-	// Check the pointer, it's better to accidentally leak than crash
+	// Check the pointer
 	if (!(info->magic == _BASIC_ALLOC_MAGIC || info->magic == _ALLOC_MAGIC))
 		return;
 
