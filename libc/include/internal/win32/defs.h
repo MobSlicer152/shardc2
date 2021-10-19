@@ -17,6 +17,9 @@
 
 #pragma once
 
+// This has to be in every header
+#include "internal/compiler_fixups.h"
+
 #include <stdint.h>
 #include <stdlib.h>
 #include <wchar.h>

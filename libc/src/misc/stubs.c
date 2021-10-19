@@ -15,6 +15,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#include <stdint.h>
+
 #if !defined __GNUC__ && !defined _MSC_VER
 void __stack_chk_fail(void)
 {
@@ -22,6 +24,15 @@ void __stack_chk_fail(void)
 #endif // !__GNUC__ && !_MSC_VER
 
 #ifdef _MSC_VER
+void __GSHandlerCheck(void)
+{
+}
+
+uintptr_t __security_cookie;
+void __security_check_cookie(void)
+{
+}
+
 void _RTC_InitBase(void)
 {
 }

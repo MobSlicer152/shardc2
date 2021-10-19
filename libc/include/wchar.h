@@ -17,6 +17,9 @@
 
 #pragma once
 
+// This has to be in every header
+#include "internal/compiler_fixups.h"
+
 #include <stddef.h>
 
 // Make a character lowercase

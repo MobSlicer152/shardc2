@@ -28,6 +28,21 @@ long (*__LdrGetProcedureAddress)(void *base, ANSI_STRING *name,
 long (*__LdrLoadDll)(wchar_t *path, unsigned long *characteristics,
 		     UNICODE_STRING *name, void **base_out) = 0;
 long (*__LdrUnloadDll)(void *base) = 0;
+
+long (*__NtAllocateVirtualMemory)(uint64_t process, void *preferred_base,
+				  uintptr_t address_bitmask, size_t *size,
+				  uint32_t alloc_type, uint32_t prot) = 0;
+long (*__NtFreeVirtualMemory)(uint64_t process, void **base, size_t *size,
+			      uint32_t type) = 0;
+long (*__NtProtectVirtualMemory)(uint64_t process, void *base, size_t *size,
+				 uint32_t prot, uint32_t *old_prot) = 0;
+long (*__NtQueryInformationProcess)(uint64_t process,
+				    PROCESSINFOCLASS info_type, void *info,
+				    uint32_t info_buffer_size,
+				    uint32_t *info_size) = 0;
+long (*__NtQuerySystemInformation)(SYSTEM_INFORMATION_CLASS info_type,
+				   void *info, uint32_t info_buffer_size,
+				   uint32_t *info_size) = 0;
 long (*__NtTerminateProcess)(uint64_t handle, uint32_t status) = 0;
 
 void __load_lib_dep_funcs(PEB *peb)
@@ -62,13 +77,27 @@ void __load_lib_dep_funcs(PEB *peb)
 				  .VirtualAddress);
 
 	// Load other important functions, and kernel32
-	__LdrGetProcedureAddress = __load_symbol(__ntdll, edt, "LdrGetProcedureAddress");
+	//	__LdrGetProcedureAddress = __load_symbol(__ntdll, edt, "LdrGetProcedureAddress"); This isn't necessary, and Windows 7 doesn't like it
 	__LdrLoadDll = __load_symbol(__ntdll, edt, "LdrLoadDll");
 	__LdrUnloadDll = __load_symbol(__ntdll, edt, "LdrUnloadDll");
-	__NtTerminateProcess = __load_symbol(__ntdll, edt, "NtTerminateProcess");
+
+	__NtAllocateVirtualMemory =
+		__load_symbol(__ntdll, edt, "NtAllocateVirtualMemory");
+	__NtFreeVirtualMemory =
+		__load_symbol(__ntdll, edt, "NtFreeVirtualMemory");
+	__NtProtectVirtualMemory =
+		__load_symbol(__ntdll, edt, "NtProtectVirtualMemory");
+	__NtQueryInformationProcess =
+		__load_symbol(__ntdll, edt, "NtQueryInformationProcess");
+	__NtQuerySystemInformation =
+		__load_symbol(__ntdll, edt, "NtQuerySystemInformation");
+	__NtTerminateProcess =
+		__load_symbol(__ntdll, edt, "NtTerminateProcess");
 
 	// Get kernel32's base address
-	__LdrLoadDll(NULL, NULL, &(UNICODE_STRING)RTL_CONSTANT_STRING(L"kernel32.dll"), &__kernel32);
+	__LdrLoadDll(NULL, NULL,
+		     &(UNICODE_STRING)RTL_CONSTANT_STRING(L"kernel32.dll"),
+		     &__kernel32);
 }
 
 uint32_t __get_symbol_ordinal(void *base, IMAGE_EXPORT_DIRECTORY *edt,
@@ -108,7 +137,9 @@ void *__load_symbol(void *base, IMAGE_EXPORT_DIRECTORY *edt, const char *symbol)
 
 	if (!__LdrGetProcedureAddress) {
 		// Look up the function in the table of functions
-		func = (uint8_t *)base + funcs[__get_symbol_ordinal(base, edt, symbol) - edt->Base];
+		func = (uint8_t *)base +
+		       funcs[__get_symbol_ordinal(base, edt, symbol) -
+			     edt->Base];
 	} else {
 		// Fill the string
 		name.Buffer = (char *)symbol;

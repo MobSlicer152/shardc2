@@ -5,10 +5,10 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "(Windows) Launch",
+            "name": "(Windows) Initialization test",
             "type": "cppvsdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/out/test.exe",
+            "program": "${workspaceFolder}/out/main.exe",
             "args": [],
             "stopAtEntry": false,
             "cwd": "${fileDirname}",

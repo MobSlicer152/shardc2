@@ -1,5 +1,5 @@
 #  Tests (not unit tests, just the bare minimum to be able to mess with
-#  functions with complicated stuff going on)
+#  functions with complicated stuff going on in them)
 # 
 #  Copyright 2021 MobSlicer152
 # 
@@ -15,8 +15,9 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-executable("test") {
-  sources = [ "test.c" ]
+# Tests initialization
+executable("main") {
+  sources = [ "main.c" ]
 
   deps = [ "//libc:c" ]
 }

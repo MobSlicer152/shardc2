@@ -68,7 +68,7 @@ memset:
 	byte_copy:
 		; Check exit condition (i < n)
 		mov rcx, i
-		cmp r8, QWORD PTR [rcx]
+		cmp r8, rcx
 		jae return
 
 		; Copy the value
@@ -188,7 +188,7 @@ memset:
 
 	; Return
 	return:
-		mov rax, r12
+		mov rax, r12 ; Most string.h functions return the destination pointer
 		pop r13
 		pop r12
 		pop rcx

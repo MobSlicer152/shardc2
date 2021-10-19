@@ -17,6 +17,9 @@
 
 #pragma once
 
+// This has to be in every header
+#include "internal/compiler_fixups.h"
+
 #include <stdbool.h>
 #include <stdint.h>
 
@@ -42,3 +45,11 @@ extern struct __cpu_features __features;
 // Detect CPU features
 extern void __libc_detect_features(void);
 
+// Allocate memory for internal use
+extern void *__alloc(size_t size);
+
+// Get free memory
+extern size_t __get_free_mem(void);
+
+// Free memory returned by __alloc
+extern void __free(void *chunk);

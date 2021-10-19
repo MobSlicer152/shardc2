@@ -1,4 +1,4 @@
-// String and buffer related utilities
+// Tests the entry point and the calling of the main function
 //
 // Copyright 2021 MobSlicer152
 // This file is part of Shard C Library 2
@@ -15,22 +15,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#pragma once
-
-// This has to be in every header
-#include "internal/compiler_fixups.h"
-
-// The standard basically expects this header to include stddef
-#include <stddef.h>
-
-// Compare n bytes of b1 to b2
-extern int memcmp(const void *b1, const void *b2, size_t n);
-
-// Copy n bytes of src to dst
-extern void *memcpy(void *restrict dst, const void *restrict src, size_t n);
-
-// Initialize n bytes of b to c
-extern void *memset(void *b, int c, size_t n);
-
-// Get the length of s
-extern size_t strlen(const char *s);
+int main(int argc, char *argv[])
+{
+	return 0;
+}

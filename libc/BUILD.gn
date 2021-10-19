@@ -44,6 +44,7 @@ static_library("c") {
       "src/win32/crt0.c",
       "src/win32/ldr.c",
       "src/win32/stdlib/exit.c",
+      "src/win32/stdlib/mem.c",
     ]
   } else if (is_linux) {
     sources += [ "src/linux/startup/init.c" ]

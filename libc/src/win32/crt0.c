@@ -27,6 +27,9 @@ void mainCRTStartup(void)
 {
 	int ret = 0;
 	UNICODE_STRING cmdline;
+	char **argv;
+	int argc = 1;
+	size_t i;
 
 	// First get the PEB
 	__peb = _PEB_LOC;
@@ -37,8 +40,23 @@ void mainCRTStartup(void)
 	// Now load functions used throughout the library
 	__load_lib_dep_funcs(__peb);
 
-	// Convert the commandline to argv
+	// Convert the commandline to argv.
+	// First, count the spaces in the source commandline.
+	// Then, convert each argument to ASCII and
 	cmdline = __peb->ProcessParameters->CommandLine;
+	for (i = 0; i < cmdline.Length; i++) {
+		// Skip whitespace
+		while (i < cmdline.Length && cmdline.Buffer[i] == L' ' ||
+		       cmdline.Buffer[i] == L'\n')
+			i++;
+		if (i < cmdline.Length && cmdline.Buffer[i] == L' ' ||
+		    cmdline.Buffer[i] == L'\n')
+			argc++;
+	}
+	argv = __alloc(argc * sizeof(char *));
+	if (!argv)
+		exit(-1);
+	__free(argv);
 
 	// Exit
 	exit(ret);

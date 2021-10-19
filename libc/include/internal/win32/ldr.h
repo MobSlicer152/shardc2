@@ -17,6 +17,9 @@
 
 #pragma once
 
+// This has to be in every header
+#include "internal/compiler_fixups.h"
+
 #include "defs.h"
 
 extern uint8_t *__ntdll;
@@ -38,4 +41,19 @@ extern long (*__LdrGetProcedureAddress)(void *base, ANSI_STRING *name,
 extern long (*__LdrLoadDll)(wchar_t *path, unsigned long *characteristics,
 			  UNICODE_STRING *name, void **base_out);
 extern long (*__LdrUnloadDll)(void *base);
+
+extern long (*__NtAllocateVirtualMemory)(uint64_t process, void *preferred_base,
+				  uintptr_t address_bitmask, size_t *size,
+				  uint32_t alloc_type, uint32_t prot);
+extern long (*__NtFreeVirtualMemory)(uint64_t process, void **base, size_t *size,
+			      uint32_t type);
+extern long (*__NtProtectVirtualMemory)(uint64_t process, void *base, size_t *size,
+				 uint32_t prot, uint32_t *old_prot);
+extern long (*__NtQueryInformationProcess)(uint64_t process,
+				    PROCESSINFOCLASS info_type, void *info,
+				    uint32_t info_buffer_size,
+				    uint32_t *info_size);
+extern long (*__NtQuerySystemInformation)(SYSTEM_INFORMATION_CLASS info_type,
+				   void *info, uint32_t info_buffer_size,
+				   uint32_t *info_size);
 extern long (*__NtTerminateProcess)(uint64_t handle, uint32_t status);

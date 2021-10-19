@@ -17,14 +17,25 @@
 
 #pragma once
 
+// This has to be in every header
+#include "internal/compiler_fixups.h"
+
 // stddef is a freestanding header, so I not only don't have to but shouldn't implement it
 #include <stddef.h>
 
-// Structure to store allocation details
-#define _ALLOC_MAGIC 42069
-struct __alloc_info {
-	short magic; // Magic value to detect valid chunks
+// Magic numbers for validating allocated pointers
+#define _BASIC_ALLOC_MAGIC 0x434947414D // MAGIC in ASCII
+#define _ALLOC_MAGIC 0x32434947414D // MAGIC2 in ASCII
+
+// Information for __alloc, due to the nature of NtAllocateVirtualMemory and mmap
+struct __basic_alloc_info {
+	unsigned long long magic; // Magic value to detect valid chunks
 	size_t size; // Original size
+};
+
+// Information for malloc'd chunks
+struct __alloc_info {
+	struct __basic_alloc_info base_info; // Basic info
 	_Bool is_free; // Whether this chunk is free
 	struct __alloc_info *next; // Next chunk. NULL if this is the last one
 };
@@ -48,7 +59,11 @@ extern _Noreturn void exit(int status);
 // Exit without calling atexit functions
 extern _Noreturn void _Exit(int status);
 
-// Allocate heap space (free the pointer after)
+// Allocate n bytes of heap space
+extern void *malloc(size_t n);
+
+// Allocate and zero n elements of size bytes each
+extern void *calloc(size_t n, size_t size);
 
 // Free an allocation
 extern void free(void *chunk);

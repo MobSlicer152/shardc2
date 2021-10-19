@@ -16,6 +16,9 @@
 		"phnt_windows.h": "c",
 		"ldr.h": "c",
 		"stdlib.h": "c",
-		"crt0.h": "c"
+		"crt0.h": "c",
+		"windows.h": "c",
+		"compiler_fixups.h": "c",
+		"string.h": "c"
 	}
 }
