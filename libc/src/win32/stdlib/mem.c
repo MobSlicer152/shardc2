@@ -81,7 +81,7 @@ void __free(void *chunk)
 	size_t size;
 
 	// Check the pointer
-	if (!(info->magic == _BASIC_ALLOC_MAGIC || info->magic == _ALLOC_MAGIC))
+	if (!(chunk || info->magic == _BASIC_ALLOC_MAGIC || info->magic == _ALLOC_MAGIC))
 		return;
 
 	// Free the memory

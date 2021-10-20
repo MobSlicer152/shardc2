@@ -22,13 +22,16 @@
 
 PEB *__peb;
 struct __cpu_features __features;
+bool __is_windows_7;
 
 void mainCRTStartup(void)
 {
 	int ret = 0;
 	UNICODE_STRING cmdline;
+	wchar_t *cmdline2;
+	wchar_t *cmdline3;
 	char **argv;
-	int argc = 1;
+	int argc = 0;
 	size_t i;
 
 	// First get the PEB
@@ -40,22 +43,40 @@ void mainCRTStartup(void)
 	// Now load functions used throughout the library
 	__load_lib_dep_funcs(__peb);
 
-	// Convert the commandline to argv.
-	// First, count the spaces in the source commandline.
-	// Then, convert each argument to ASCII and
+	// Convert the commandline to argv
 	cmdline = __peb->ProcessParameters->CommandLine;
+	cmdline2 = __alloc(cmdline.MaximumLength * sizeof(wchar_t));
+	wcsncpy(cmdline2, cmdline.Buffer, cmdline.Length);
 	for (i = 0; i < cmdline.Length; i++) {
 		// Skip whitespace
-		while (i < cmdline.Length && cmdline.Buffer[i] == L' ' ||
-		       cmdline.Buffer[i] == L'\n')
+		while (i + 1 < cmdline.Length && cmdline2[i + 1] == L' ' ||
+		       cmdline2[i + 1] == L'\t')
 			i++;
-		if (i < cmdline.Length && cmdline.Buffer[i] == L' ' ||
-		    cmdline.Buffer[i] == L'\n')
+		if (i < cmdline.Length && cmdline2[i] == L' ' ||
+		    cmdline2[i] == L'\t') {
 			argc++;
+			cmdline2[i] = '\0';
+		}
 	}
 	argv = __alloc(argc * sizeof(char *));
-	if (!argv)
-		exit(-1);
+	cmdline3 = cmdline2;
+	for (i = 0; i < argc; i++) {
+		size_t arg_len = wcslen(cmdline3) + 1;
+
+		// Convert this argument, then advance the pointer
+		argv[i] = __alloc(arg_len);
+		wcstostr(argv[i], cmdline3, arg_len);
+		cmdline3 += arg_len;
+	}
+
+	// Call main
+	ret = main(argc, argv);
+
+	// Free argv
+	for (i = 0; i < argc; i++) {
+		if (argv[i])
+			__free(argv[i]);
+	}
 	__free(argv);
 
 	// Exit

@@ -66,7 +66,7 @@ void __load_lib_dep_funcs(PEB *peb)
 			break;
 	}
 
-	// Locate LdrGetProcedureAddress by hand
+	// Locate ntdll
 	__ntdll = cur_dll->DllBase;
 	dos_hdr = (IMAGE_DOS_HEADER *)__ntdll;
 	nt_hdrs = (IMAGE_NT_HEADERS *)(__ntdll + dos_hdr->e_lfanew);
@@ -76,8 +76,13 @@ void __load_lib_dep_funcs(PEB *peb)
 				  .DataDirectory[IMAGE_DIRECTORY_ENTRY_EXPORT]
 				  .VirtualAddress);
 
+	// Detect if this is Windows 7
+	__is_windows_7 = nt_hdrs->OptionalHeader.MajorImageVersion <= 6 &&
+			 nt_hdrs->OptionalHeader.MinorImageVersion <= 2;
+
 	// Load other important functions, and kernel32
-	//	__LdrGetProcedureAddress = __load_symbol(__ntdll, edt, "LdrGetProcedureAddress"); This isn't necessary, and Windows 7 doesn't like it
+	__LdrGetProcedureAddress =
+		__load_symbol(__ntdll, edt, "LdrGetProcedureAddress");
 	__LdrLoadDll = __load_symbol(__ntdll, edt, "LdrLoadDll");
 	__LdrUnloadDll = __load_symbol(__ntdll, edt, "LdrUnloadDll");
 
@@ -125,7 +130,7 @@ uint32_t __get_symbol_ordinal(void *base, IMAGE_EXPORT_DIRECTORY *edt,
 		else if (cmp > 0)
 			max = mid - 1;
 		else
-			return mid + edt->Base;
+			return mid + edt->Base + 1;
 	}
 
 	return UINT32_MAX;
@@ -139,10 +144,11 @@ void *__load_symbol(void *base, IMAGE_EXPORT_DIRECTORY *edt, const char *symbol)
 	uint32_t ord;
 
 	if (!__LdrGetProcedureAddress) {
-		// Look up the function in the table of functions
-		ord = __get_symbol_ordinal(base, edt, symbol) - edt->Base - 1 + 9;
-		func = (uint8_t *)base +
-		       funcs[ord];
+		// Look up the function in the table of function
+		ord = __get_symbol_ordinal(base, edt, symbol) - edt->Base;
+		if (__is_windows_7)
+			ord += 7; // Determined through trial and error
+		func = (uint8_t *)base + funcs[ord];
 	} else {
 		// Fill the string
 		name.Buffer = (char *)symbol;

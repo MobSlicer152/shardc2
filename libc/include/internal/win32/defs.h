@@ -20,6 +20,7 @@
 // This has to be in every header
 #include "internal/compiler_fixups.h"
 
+#include <stdbool.h>
 #include <stdint.h>
 #include <stdlib.h>
 #include <wchar.h>
@@ -31,6 +32,9 @@
 
 // The current process's PEB, defined in win32/crt0.c
 extern PEB *__peb;
+
+// Whether this is a Windows 7 system
+extern bool __is_windows_7;
 
 // Get a pointer to the PEB
 #ifdef _M_IX86_

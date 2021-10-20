@@ -30,3 +30,9 @@ extern int wcscasecmp(const wchar_t *s1, const wchar_t *s2);
 
 // Get the length of a wide string
 extern size_t wcslen(const wchar_t *s);
+
+// Copy src to dst. src must be large enough to hold wcslen(src) + 1
+extern wchar_t *wcscpy(wchar_t *dst, const wchar_t *src);
+
+// Copy n characters of src to dst. dst must be n wide characters or more
+extern wchar_t *wcsncpy(wchar_t *dst, const wchar_t *src, size_t n);
