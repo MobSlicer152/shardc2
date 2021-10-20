@@ -28,14 +28,17 @@ void *__alloc(size_t size)
 	uint8_t *ret = NULL;
 	size_t real_size = size + sizeof(struct __basic_alloc_info);
 	struct __basic_alloc_info *info;
+	size_t free_mem;
 
 	// Check if there's even enough free memory (doesn't work on Windows 7)
-	//if (real_size > __get_free_mem())
-	//	return NULL;
+	free_mem = __get_free_mem();
+	if (real_size > free_mem)
+		return NULL;
 
 	// Request the memory
-	status = __NtAllocateVirtualMemory(-1, &ret, 0, &real_size, MEM_COMMIT | MEM_RESERVE,
-				  PAGE_READWRITE);
+	status = __NtAllocateVirtualMemory(-1, &ret, 0, &real_size,
+					   MEM_COMMIT | MEM_RESERVE,
+					   PAGE_READWRITE);
 	if (status != 0 || !ret || real_size < size)
 		return NULL;
 
@@ -44,11 +47,8 @@ void *__alloc(size_t size)
 	info->magic = _BASIC_ALLOC_MAGIC;
 	info->size = real_size;
 
-	// Zero the rest of the memory, to prevent garbage from leaking in
-	ret += sizeof(struct __basic_alloc_info);
-	memset(ret, 0, real_size - sizeof(struct __basic_alloc_info));
-
-	return ret;
+	// The spec for NtAllocateVirtualMemory guarantees the pages to be zeroed.
+	return ret + sizeof(struct __basic_alloc_info);
 }
 
 size_t __get_free_mem(void)
@@ -56,6 +56,7 @@ size_t __get_free_mem(void)
 	SYSTEM_BASIC_INFORMATION sys_info;
 	VM_COUNTERS mem_usage;
 	size_t mem_total;
+	size_t mem_free;
 
 	// Get system information
 	__NtQuerySystemInformation(SystemBasicInformation, &sys_info,
@@ -70,7 +71,9 @@ size_t __get_free_mem(void)
 	__NtQueryInformationProcess(-1, ProcessVmCounters, &mem_usage,
 				    sizeof(VM_COUNTERS), NULL);
 
-	return mem_total - mem_usage.VirtualSize;
+	// Calculate free memory
+	mem_free = mem_total - mem_usage.VirtualSize;
+	return mem_free;
 }
 
 void __free(void *chunk)
@@ -81,7 +84,8 @@ void __free(void *chunk)
 	size_t size;
 
 	// Check the pointer
-	if (!(chunk || info->magic == _BASIC_ALLOC_MAGIC || info->magic == _ALLOC_MAGIC))
+	if (!(chunk || info->magic == _BASIC_ALLOC_MAGIC ||
+	      info->magic == _ALLOC_MAGIC))
 		return;
 
 	// Free the memory

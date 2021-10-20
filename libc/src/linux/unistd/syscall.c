@@ -1,7 +1,6 @@
-// Stubs and miscellaneous compiler-specific functions
+// Linux syscall wrapper
 //
 // Copyright 2021 MobSlicer152
-// This file is part of Shard C Library 2
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -15,28 +14,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include <stdint.h>
-#include <stdlib.h>
+#include "unistd.h"
 
-#if !defined __GNUC__ || !defined _MSC_VER
-void __stack_chk_fail(void)
+#include "internal/crt0.h"
+
+__reg_size_t __syscall(__reg_size_t param1, __reg_size_t param2,
+		       __reg_size_t param3, __reg_size_t param4,
+		       __reg_size_t param5, __reg_size_t param6, ...,
+		       __reg_size_t number)
 {
 }
-#endif
-
-#ifdef _MSC_VER
-void __GSHandlerCheck(void)
-{
-}
-
-uintptr_t __security_cookie;
-
-void __security_init_cookie(void)
-{
-#ifdef _M_X64
-	__security_cookie = 0x6969696969696969;
-#elif _M_IX86
-	__security_cookie = 0x69696969;
-#endif
-}
-#endif

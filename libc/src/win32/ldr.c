@@ -146,7 +146,7 @@ void *__load_symbol(void *base, IMAGE_EXPORT_DIRECTORY *edt, const char *symbol)
 	if (!__LdrGetProcedureAddress) {
 		// Look up the function in the table of function
 		ord = __get_symbol_ordinal(base, edt, symbol) - edt->Base;
-		if (__is_windows_7)
+		if (__is_windows_7 && base == __ntdll)
 			ord += 7; // Determined through trial and error
 		func = (uint8_t *)base + funcs[ord];
 	} else {

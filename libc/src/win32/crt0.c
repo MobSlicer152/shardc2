@@ -60,7 +60,7 @@ void mainCRTStartup(void)
 	}
 	argv = __alloc(argc * sizeof(char *));
 	cmdline3 = cmdline2;
-	for (i = 0; i < argc; i++) {
+	for (i = 0; i < argc, cmdline3 - cmdline2 < cmdline.Length; i++) {
 		size_t arg_len = wcslen(cmdline3) + 1;
 
 		// Convert this argument, then advance the pointer

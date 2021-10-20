@@ -31,7 +31,10 @@ size_t wcstostr(char *restrict dst, const wchar_t *restrict src, size_t n)
 			return (size_t)-1; // This is taken from wcstombs's behaviour
 	}
 
-	// Return the number of characters processed and terminate the string
-	dst[i + 1] = '\0';
+	// Add a NULL terminator
+	i++;
+	dst[i] = '\0';
+
+	// Return the number of characters processed
 	return i;
 }

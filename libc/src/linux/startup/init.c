@@ -28,4 +28,7 @@ void __libc_linux_init(int argc, char **argv)
 
 	// Call main
 	ret = main(argc, argv);
+
+	// Exit
+	exit(ret);
 }

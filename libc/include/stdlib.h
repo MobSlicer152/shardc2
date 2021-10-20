@@ -49,7 +49,8 @@ extern void *bsearch(const void *key, const void *base, size_t n, size_t size,
 	      int (*cmp)(const void *guess, const void *key));
 
 // Convert a wide character string to an ASCII string
-// (I don't understand character encodings well enough for wcstombs)
+// (I don't understand character encodings well enough for wcstombs).
+// Returns the number of characters converted, including the terminating NULL
 extern size_t wcstostr(char *restrict dst, const wchar_t *restrict src,
 		       size_t n);
 
