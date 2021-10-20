@@ -109,7 +109,6 @@ uint32_t __get_symbol_ordinal(void *base, IMAGE_EXPORT_DIRECTORY *edt,
 			      const char *name)
 {
 	uint32_t *npt;
-	uint32_t *eot;
 	int cmp;
 	uint32_t max;
 	uint32_t mid;
@@ -117,7 +116,6 @@ uint32_t __get_symbol_ordinal(void *base, IMAGE_EXPORT_DIRECTORY *edt,
 
 	// Get the name pointer table and export ordinal table
 	npt = (uint32_t *)((uint8_t *)base + edt->AddressOfNames);
-	eot = (uint32_t *)((uint8_t *)base + edt->AddressOfNameOrdinals);
 
 	// Do a binary search for the function
 	min = 0;

@@ -1,4 +1,5 @@
-;  Security cookie check, because MSVC generates code that clobbers the return value
+;  Security cookie check, because MSVC generates code that clobbers the return
+;  value of the function being checked
 ; 
 ;  Copyright 2021 MobSlicer152
 ; 
