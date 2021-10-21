@@ -128,7 +128,7 @@ toolchain("msvc") {
     libname = "${dllname}.lib"  # e.g. foo.dll.lib
     pdbname = "${dllname}.pdb"
     rspfile = "${dllname}.rsp"
-    command = "cmd /c \"link /nologo {{ldflags}} /dll /implib:$libname /out:$dllname /pdb:$pdbname @$rspfile | findstr /v /i Creating & echo > nul\""
+    command = "cmd /c \"link /nologo /dll /implib:$libname /out:$dllname @$rspfile | findstr /v /i Creating & echo > nul\""
     description = "LINK(DLL) $dllname"
 
     # Use this for {{output_extension}} expansions unless a target manually
@@ -139,7 +139,7 @@ toolchain("msvc") {
     # Use this for {{output_dir}} expansions unless a target manually overrides
     # it (in which case {{output_dir}} will be what the target specifies).
     default_output_dir = "{{root_out_dir}}"
-    
+
     outputs = [
       dllname,
       libname,
@@ -159,11 +159,10 @@ toolchain("msvc") {
   }
   tool("link") {
     exename = "{{output_dir}}/{{target_output_name}}{{output_extension}}"
-    pdbname = "$exename.pdb"
+    pdbname = "${exename}.pdb"
     rspfile = "$exename.rsp"
 
-    command =
-        "cmd /c \"link /out:$exename /subsystem:console /nologo /pdb:$pdbname @$rspfile | findstr /v /i Creating & echo > nul\""
+    command = "cmd /c \"link /out:$exename /nologo @$rspfile | findstr /v /i Creating & echo > nul\""
 
     default_output_extension = ".exe"
     default_output_dir = "{{root_out_dir}}"

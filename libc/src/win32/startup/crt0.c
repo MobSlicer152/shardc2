@@ -65,7 +65,7 @@ void mainCRTStartup(void)
 
 		// Convert this argument, then advance the pointer
 		argv[i] = __alloc(arg_len);
-		wcstostr(argv[i], cmdline3, arg_len);
+		wcstostr(argv[i], cmdline3, arg_len, '.');
 		cmdline3 += arg_len;
 	}
 

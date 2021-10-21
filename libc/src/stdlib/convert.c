@@ -19,7 +19,7 @@
 
 #include <limits.h>
 
-_LIBC_DLLSYM size_t wcstostr(char *restrict dst, const wchar_t *restrict src, size_t n)
+_LIBC_DLLSYM size_t wcstostr(char *restrict dst, const wchar_t *restrict src, size_t n, char invalid_replacement)
 {
 	size_t i;
 
@@ -28,7 +28,7 @@ _LIBC_DLLSYM size_t wcstostr(char *restrict dst, const wchar_t *restrict src, si
 		if (src[i] < UCHAR_MAX)
 			dst[i] = (char)src[i] & UCHAR_MAX;
 		else
-			return (size_t)-1; // This is taken from wcstombs's behaviour
+			dst[i] = invalid_replacement;
 	}
 
 	// Add a NULL terminator

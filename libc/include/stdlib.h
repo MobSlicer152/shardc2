@@ -52,7 +52,7 @@ _LIBC_DLLSYM void *bsearch(const void *key, const void *base, size_t n, size_t s
 // (I don't understand character encodings well enough for wcstombs).
 // Returns the number of characters converted, including the terminating NULL
 _LIBC_DLLSYM size_t wcstostr(char *restrict dst, const wchar_t *restrict src,
-		       size_t n);
+		       size_t n, char invalid_replacement);
 
 // Exit, calling atexit functions
 _LIBC_DLLSYM _Noreturn void exit(int status);

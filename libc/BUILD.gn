@@ -14,7 +14,7 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-source_set("startup") {
+static_library("startup") {
   include_dirs = [
     "//deps/include",
     "include",
