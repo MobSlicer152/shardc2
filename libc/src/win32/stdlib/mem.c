@@ -22,7 +22,7 @@
 #include "internal/win32/defs.h"
 #include "internal/win32/ldr.h"
 
-void *__alloc(size_t size)
+_LIBC_DLLSYM void *__alloc(size_t size)
 {
 	uint32_t status;
 	uint8_t *ret = NULL;
@@ -51,7 +51,7 @@ void *__alloc(size_t size)
 	return ret + sizeof(struct __basic_alloc_info);
 }
 
-size_t __get_free_mem(void)
+_LIBC_DLLSYM size_t __get_free_mem(void)
 {
 	SYSTEM_BASIC_INFORMATION sys_info;
 	VM_COUNTERS mem_usage;
@@ -76,7 +76,7 @@ size_t __get_free_mem(void)
 	return mem_free;
 }
 
-void __free(void *chunk)
+_LIBC_DLLSYM void __free(void *chunk)
 {
 	struct __basic_alloc_info *info =
 		(struct __basic_alloc_info *)((uint8_t *)chunk -

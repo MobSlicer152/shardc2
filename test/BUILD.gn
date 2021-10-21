@@ -19,5 +19,5 @@
 executable("main") {
   sources = [ "main.c" ]
 
-  deps = [ "//libc:c" ]
+  deps = [ "//libc:startup", "//libc:c" ]
 }

@@ -24,13 +24,13 @@
 #include <stddef.h>
 
 // Compare n bytes of b1 to b2
-extern int memcmp(const void *b1, const void *b2, size_t n);
+_LIBC_DLLSYM int memcmp(const void *b1, const void *b2, size_t n);
 
 // Copy n bytes of src to dst
-extern void *memcpy(void *restrict dst, const void *restrict src, size_t n);
+_LIBC_DLLSYM void *memcpy(void *restrict dst, const void *restrict src, size_t n);
 
 // Initialize n bytes of b to c
-extern void *memset(void *b, int c, size_t n);
+_LIBC_DLLSYM void *memset(void *b, int c, size_t n);
 
 // Get the length of s
-extern size_t strlen(const char *s);
+_LIBC_DLLSYM size_t strlen(const char *s);

@@ -19,7 +19,7 @@
 
 #include <stdint.h>
 
-void *memcpy(void *restrict dst, const void *restrict src, size_t n)
+_LIBC_DLLSYM void *memcpy(void *restrict dst, const void *restrict src, size_t n)
 {
 	size_t i;
 

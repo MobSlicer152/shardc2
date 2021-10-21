@@ -23,16 +23,16 @@
 #include <stddef.h>
 
 // Make a character lowercase
-extern wchar_t towlower(wchar_t c);
+_LIBC_DLLSYM wchar_t towlower(wchar_t c);
 
 // Compare two wide strings, ignoring case
-extern int wcscasecmp(const wchar_t *s1, const wchar_t *s2);
+_LIBC_DLLSYM int wcscasecmp(const wchar_t *s1, const wchar_t *s2);
 
 // Get the length of a wide string
-extern size_t wcslen(const wchar_t *s);
+_LIBC_DLLSYM size_t wcslen(const wchar_t *s);
 
 // Copy src to dst. src must be large enough to hold wcslen(src) + 1
-extern wchar_t *wcscpy(wchar_t *dst, const wchar_t *src);
+_LIBC_DLLSYM wchar_t *wcscpy(wchar_t *dst, const wchar_t *src);
 
 // Copy n characters of src to dst. dst must be n wide characters or more
-extern wchar_t *wcsncpy(wchar_t *dst, const wchar_t *src, size_t n);
+_LIBC_DLLSYM wchar_t *wcsncpy(wchar_t *dst, const wchar_t *src, size_t n);

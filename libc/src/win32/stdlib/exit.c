@@ -19,7 +19,7 @@
 
 #include "internal/win32/ldr.h"
 
-_Noreturn void _Exit(int status)
+_LIBC_DLLSYM _Noreturn void _Exit(int status)
 {
 	// Make sure this process is cleaned up
 	__NtTerminateProcess(-1, status);

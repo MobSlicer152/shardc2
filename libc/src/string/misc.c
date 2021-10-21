@@ -20,7 +20,7 @@
 #include <stdint.h>
 #include <stdlib.h>
 
-size_t strlen(const char *s)
+_LIBC_DLLSYM size_t strlen(const char *s)
 {
 	size_t i = 0;
 

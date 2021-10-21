@@ -45,34 +45,34 @@ typedef unsigned long long __reg_size_t;
 #endif
 
 // Perform a binary search on a sorted (i.e. by qsort) array
-extern void *bsearch(const void *key, const void *base, size_t n, size_t size,
+_LIBC_DLLSYM void *bsearch(const void *key, const void *base, size_t n, size_t size,
 	      int (*cmp)(const void *guess, const void *key));
 
 // Convert a wide character string to an ASCII string
 // (I don't understand character encodings well enough for wcstombs).
 // Returns the number of characters converted, including the terminating NULL
-extern size_t wcstostr(char *restrict dst, const wchar_t *restrict src,
+_LIBC_DLLSYM size_t wcstostr(char *restrict dst, const wchar_t *restrict src,
 		       size_t n);
 
 // Exit, calling atexit functions
-extern _Noreturn void exit(int status);
+_LIBC_DLLSYM _Noreturn void exit(int status);
 
 // Exit without calling atexit functions
-extern _Noreturn void _Exit(int status);
+_LIBC_DLLSYM _Noreturn void _Exit(int status);
 
 // Allocate n bytes of heap space
-extern void *malloc(size_t n);
+_LIBC_DLLSYM void *malloc(size_t n);
 
 // Allocate and zero n elements of size bytes each
-extern void *calloc(size_t n, size_t size);
+_LIBC_DLLSYM void *calloc(size_t n, size_t size);
 
 // Free an allocation
-extern void free(void *chunk);
+_LIBC_DLLSYM void free(void *chunk);
 
 #if defined _X86 || defined _X86_64
 // Execute the CPUID instruction and place the values of the registers
 // into pointed to locations
-extern void _cpuid(__reg_size_t rax_in, __reg_size_t rcx_in, __reg_size_t *rax, __reg_size_t *rbx, __reg_size_t *rcx, __reg_size_t *rdx);
+_LIBC_DLLSYM void _cpuid(__reg_size_t rax_in, __reg_size_t rcx_in, __reg_size_t *rax, __reg_size_t *rbx, __reg_size_t *rcx, __reg_size_t *rdx);
 #endif
 
 // Macros for manipulating integers

@@ -17,7 +17,7 @@
 
 #include "wchar.h"
 
-int wcscasecmp(const wchar_t *s1, const wchar_t *s2)
+_LIBC_DLLSYM int wcscasecmp(const wchar_t *s1, const wchar_t *s2)
 {
 	wchar_t c1 = towlower(*s1);
 	wchar_t c2 = towlower(*s2);

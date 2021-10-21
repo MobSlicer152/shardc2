@@ -17,7 +17,7 @@
 
 #include "stdlib.h"
 
-_Noreturn void exit(int status)
+_LIBC_DLLSYM _Noreturn void exit(int status)
 {
 	_Exit(status);
 }

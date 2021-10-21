@@ -17,7 +17,7 @@
 
 #include <wchar.h>
 
-wint_t towlower(wint_t c)
+_LIBC_DLLSYM wint_t towlower(wint_t c)
 {
 	wint_t c2 = c;
 

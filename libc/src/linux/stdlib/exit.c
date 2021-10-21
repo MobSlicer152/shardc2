@@ -19,7 +19,7 @@
 
 #include "unistd.h"
 
-_Noreturn void _Exit(int status)
+_LIBC_DLLSYM _Noreturn void _Exit(int status)
 {
 	// Make sure this process is cleaned up
 	__syscall(__NR_exit, status);

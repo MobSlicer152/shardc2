@@ -14,17 +14,42 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-static_library("c") {
+source_set("startup") {
   include_dirs = [
     "//deps/include",
     "include",
   ]
-  defines = []
+
+  sources = [ "src/misc/stubs.c" ]
+
+  if (is_win) {
+    sources += [ "src/win32/startup/crt0.c" ]
+  } else if (is_linux) {
+    sources += [ "src/linux/startup/x86_64/crt0.S" ]
+  }
+
+  if (current_cpu == "x64") {
+    if (is_win) {
+      sources += [ "src/misc/x86_64/stubs.asm" ]
+    } else if (is_linux) {
+      sources += [ "src/linux/x86_64/crt0.S" ]
+    }
+  }
+}
+
+shared_library("c") {
+  include_dirs = [
+    "//deps/include",
+    "include",
+  ]
+  defines = [ "_LIBC_BUILD" ]
 
   sources = [
+    "include/internal/compiler_fixups.h",
     "include/internal/crt0.h",
     "include/stdlib.h",
     "include/string.h",
+    "include/wchar.h",
     "src/misc/stubs.c",
     "src/stdlib/convert.c",
     "src/stdlib/exit.c",
@@ -41,8 +66,8 @@ static_library("c") {
     sources += [
       "include/internal/win32/defs.h",
       "include/internal/win32/ldr.h",
-      "src/win32/crt0.c",
-      "src/win32/ldr.c",
+      "src/win32/startup/dllmain.c",
+      "src/win32/misc/ldr.c",
       "src/win32/stdlib/exit.c",
       "src/win32/stdlib/mem.c",
     ]
@@ -56,13 +81,13 @@ static_library("c") {
 
     if (is_win) {
       sources += [
+        "include/internal/win32/asmdefs.asm",
         "src/misc/x86_64/stubs.asm",
         "src/stdlib/x86_64/cpuid.asm",
         "src/string/x86_64/memset.asm",
       ]
     } else if (is_linux) {
       sources += [
-        "src/linux/x86_64/crt0.asm",
         "src/stdlib/x86_64/cpuid.S",
         "src/string/x86_64/memset.S",
       ]

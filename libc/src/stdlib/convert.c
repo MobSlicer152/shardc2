@@ -19,7 +19,7 @@
 
 #include <limits.h>
 
-size_t wcstostr(char *restrict dst, const wchar_t *restrict src, size_t n)
+_LIBC_DLLSYM size_t wcstostr(char *restrict dst, const wchar_t *restrict src, size_t n)
 {
 	size_t i;
 

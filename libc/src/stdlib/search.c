@@ -19,7 +19,7 @@
 
 #include <stdint.h>
 
-void *bsearch(const void *key, const void *base, size_t n, size_t size,
+_LIBC_DLLSYM void *bsearch(const void *key, const void *base, size_t n, size_t size,
 	      int (*cmp)(const void *guess, const void *key))
 {
 	int diff;

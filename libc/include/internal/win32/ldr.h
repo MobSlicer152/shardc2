@@ -22,38 +22,38 @@
 
 #include "defs.h"
 
-extern uint8_t *__ntdll;
-extern uint8_t *__kernel32;
+_LIBC_DLLSYM uint8_t *__ntdll;
+_LIBC_DLLSYM uint8_t *__kernel32;
 
 // Initialization function that loads functions from NTDLL and Kernel32 used by the library
-extern void __load_lib_dep_funcs(PEB *peb);
+_LIBC_DLLSYM void __load_lib_dep_funcs(PEB *peb);
 
 // Get the ordinal of a function by name (returns UINT32_MAX on failure)
-extern uint32_t __get_symbol_ordinal(void *base, IMAGE_EXPORT_DIRECTORY *edt,
+_LIBC_DLLSYM uint32_t __get_symbol_ordinal(void *base, IMAGE_EXPORT_DIRECTORY *edt,
 				   const char *name);
 
 // Loads an exported symbol from the DLL mapped at base
-extern void *__load_symbol(void *base, IMAGE_EXPORT_DIRECTORY *edt, const char *symbol);
+_LIBC_DLLSYM void *__load_symbol(void *base, IMAGE_EXPORT_DIRECTORY *edt, const char *symbol);
 
 // Function pointers that are loaded for use by the library
-extern long (*__LdrGetProcedureAddress)(void *base, ANSI_STRING *name,
+_LIBC_DLLSYM long (*__LdrGetProcedureAddress)(void *base, ANSI_STRING *name,
 				      unsigned long ord, void **func_out);
-extern long (*__LdrLoadDll)(wchar_t *path, unsigned long *characteristics,
+_LIBC_DLLSYM long (*__LdrLoadDll)(wchar_t *path, unsigned long *characteristics,
 			  UNICODE_STRING *name, void **base_out);
-extern long (*__LdrUnloadDll)(void *base);
+_LIBC_DLLSYM long (*__LdrUnloadDll)(void *base);
 
-extern long (*__NtAllocateVirtualMemory)(uint64_t process, void *preferred_base,
+_LIBC_DLLSYM long (*__NtAllocateVirtualMemory)(uint64_t process, void *preferred_base,
 				  uintptr_t address_bitmask, size_t *size,
 				  uint32_t alloc_type, uint32_t prot);
-extern long (*__NtFreeVirtualMemory)(uint64_t process, void **base, size_t *size,
+_LIBC_DLLSYM long (*__NtFreeVirtualMemory)(uint64_t process, void **base, size_t *size,
 			      uint32_t type);
-extern long (*__NtProtectVirtualMemory)(uint64_t process, void *base, size_t *size,
+_LIBC_DLLSYM long (*__NtProtectVirtualMemory)(uint64_t process, void *base, size_t *size,
 				 uint32_t prot, uint32_t *old_prot);
-extern long (*__NtQueryInformationProcess)(uint64_t process,
+_LIBC_DLLSYM long (*__NtQueryInformationProcess)(uint64_t process,
 				    PROCESSINFOCLASS info_type, void *info,
 				    uint32_t info_buffer_size,
 				    uint32_t *info_size);
-extern long (*__NtQuerySystemInformation)(SYSTEM_INFORMATION_CLASS info_type,
+_LIBC_DLLSYM long (*__NtQuerySystemInformation)(SYSTEM_INFORMATION_CLASS info_type,
 				   void *info, uint32_t info_buffer_size,
 				   uint32_t *info_size);
-extern long (*__NtTerminateProcess)(uint64_t handle, uint32_t status);
+_LIBC_DLLSYM long (*__NtTerminateProcess)(uint64_t handle, uint32_t status);

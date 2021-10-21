@@ -19,7 +19,7 @@
 
 #include <stdint.h>
 
-int memcmp(const void *b1, const void *b2, size_t n)
+_LIBC_DLLSYM int memcmp(const void *b1, const void *b2, size_t n)
 {
 	size_t i;
 	int ret;
@@ -39,7 +39,7 @@ int memcmp(const void *b1, const void *b2, size_t n)
 		return 0;
 }
 
-int strcmp(const char *s1, const char *s2)
+_LIBC_DLLSYM int strcmp(const char *s1, const char *s2)
 {
 	// They aren't equal if they're not the same length
 	return memcmp(s1, s2, strlen(s1));

@@ -21,7 +21,7 @@
 #include <limits.h>
 #include <stdint.h>
 
-void __libc_detect_features(void)
+_LIBC_DLLSYM void __libc_detect_features(void)
 {
 	__reg_size_t rax = 0;
 	__reg_size_t rbx = 0;
