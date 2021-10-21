@@ -121,7 +121,7 @@ toolchain("msvc") {
     outputs =
         [ "{{target_out_dir}}/{{target_output_name}}{{output_extension}}" ]
     default_output_extension = ".lib"
-    output_prefix = ""
+    output_prefix = "lib"
   }
   tool("solink") {
     dllname = "{{output_dir}}/{{target_output_name}}{{output_extension}}"
@@ -153,7 +153,7 @@ toolchain("msvc") {
       libname,
       pdbname,
     ]
-    output_prefix = ""
+    output_prefix = "lib"
     rspfile_content =
         "{{libs}} {{solibs}} {{inputs_newline}} {{ldflags}} {{rlibs}}"
   }
