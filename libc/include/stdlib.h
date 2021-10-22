@@ -24,8 +24,17 @@
 #include <stddef.h>
 
 // Magic numbers for validating allocated pointers
-#define _BASIC_ALLOC_MAGIC 0x434947414D // MAGIC in ASCII
+#define _ALLOC_BASIC_MAGIC 0x434947414D // MAGIC in ASCII
 #define _ALLOC_MAGIC 0x32434947414D // MAGIC2 in ASCII
+
+// Check if a chunk from __alloc is valid
+#define _ALLOC_BASIC_IS_VALID(alloc_info) (alloc_info && alloc_info->magic == _ALLOC_BASIC_MAGIC)
+
+// Check if an allocation's magic number is valid
+#define _ALLOC_IS_VALID(alloc_info) (alloc_info && alloc_info->basic_info.magic == _ALLOC_MAGIC)
+
+// Get the real size of an allocation (i.e. without the metadata)
+#define _ALLOC_REAL_SIZE(alloc_info) (alloc_info->basic_info.size - sizeof(struct __alloc_info))
 
 // Information for __alloc, due to the nature of NtAllocateVirtualMemory and mmap
 struct __basic_alloc_info {
@@ -35,7 +44,7 @@ struct __basic_alloc_info {
 
 // Information for malloc'd chunks
 struct __alloc_info {
-	struct __basic_alloc_info base_info; // Basic info
+	struct __basic_alloc_info basic_info; // Basic info
 	_Bool is_free; // Whether this chunk is free
 	struct __alloc_info *next; // Next chunk. NULL if this is the last one
 };

@@ -44,7 +44,7 @@ _LIBC_DLLSYM void *__alloc(size_t size)
 
 	// Store information for freeing this allocation
 	info = (struct __basic_alloc_info *)ret;
-	info->magic = _BASIC_ALLOC_MAGIC;
+	info->magic = _ALLOC_BASIC_MAGIC;
 	info->size = real_size;
 
 	// The spec for NtAllocateVirtualMemory guarantees the pages to be zeroed.
@@ -83,9 +83,8 @@ _LIBC_DLLSYM void __free(void *chunk)
 					      sizeof(struct __basic_alloc_info));
 	size_t size;
 
-	// Check the pointer
-	if (!(chunk || info->magic == _BASIC_ALLOC_MAGIC ||
-	      info->magic == _ALLOC_MAGIC))
+	// Check the pointer (avoid wasting a syscall)
+	if (!_ALLOC_BASIC_IS_VALID(info))
 		return;
 
 	// Free the memory

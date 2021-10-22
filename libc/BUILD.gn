@@ -53,6 +53,7 @@ shared_library("c") {
     "src/misc/stubs.c",
     "src/stdlib/convert.c",
     "src/stdlib/exit.c",
+    "src/stdlib/mem.c",
     "src/stdlib/search.c",
     "src/string/compare.c",
     "src/string/mem.c",

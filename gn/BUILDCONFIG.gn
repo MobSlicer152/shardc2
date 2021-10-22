@@ -43,7 +43,10 @@ _shared_binary_flags = [ "//gn:compiler_defaults" ]
 
 set_defaults("executable") {
   configs = _shared_binary_flags
-  configs += [ "//gn:executable_ldconfig" ]
+}
+
+set_defaults("shared_library") {
+  configs = _shared_binary_flags
 }
 
 set_defaults("static_library") {

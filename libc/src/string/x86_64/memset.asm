@@ -32,7 +32,8 @@ i DQ 0
 
 .code
 
-memset:
+PUBLIC memset
+memset PROC
 	; Stack setup
 	push rbp
 	mov rbp, rsp
@@ -194,7 +195,6 @@ memset:
 		pop rcx
 		leave
 		ret
-
-PUBLIC memset
+memset ENDP
 
 END
