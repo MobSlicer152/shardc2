@@ -45,7 +45,7 @@ void mainCRTStartup(void)
 
 	// Convert the commandline to argv
 	cmdline = __peb->ProcessParameters->CommandLine;
-	cmdline2 = __alloc(cmdline.MaximumLength * sizeof(wchar_t));
+	cmdline2 = calloc(cmdline.MaximumLength, sizeof(wchar_t));
 	wcsncpy(cmdline2, cmdline.Buffer, cmdline.Length);
 	for (i = 0; i < cmdline.Length; i++) {
 		// Skip whitespace
@@ -58,13 +58,13 @@ void mainCRTStartup(void)
 			cmdline2[i] = '\0';
 		}
 	}
-	argv = __alloc(argc * sizeof(char *));
+	argv = calloc(argc, sizeof(char *));
 	cmdline3 = cmdline2;
-	for (i = 0; i < argc, cmdline3 - cmdline2 < cmdline.Length; i++) {
+	for (i = 0; i < argc && cmdline3 - cmdline2 < cmdline.Length; i++) {
 		size_t arg_len = wcslen(cmdline3) + 1;
 
 		// Convert this argument, then advance the pointer
-		argv[i] = __alloc(arg_len);
+		argv[i] = calloc(arg_len, sizeof(char));
 		wcstostr(argv[i], cmdline3, arg_len, '.');
 		cmdline3 += arg_len;
 	}
@@ -75,9 +75,9 @@ void mainCRTStartup(void)
 	// Free argv
 	for (i = 0; i < argc; i++) {
 		if (argv[i])
-			__free(argv[i]);
+			free(argv[i]);
 	}
-	__free(argv);
+	free(argv);
 
 	// Exit
 	exit(ret);

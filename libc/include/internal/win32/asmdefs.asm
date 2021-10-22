@@ -21,5 +21,3 @@ __cpu_features STRUCT
 	_rdrand BYTE ?
 	is_it_hammer_time BYTE ?
 __cpu_features ENDS
-
-END

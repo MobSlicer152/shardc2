@@ -11,7 +11,7 @@
             "program": "${workspaceFolder}/out/main.exe",
             "args": [],
             "stopAtEntry": false,
-            "cwd": "${fileDirname}",
+            "cwd": "${workspaceFolder}/out",
             "environment": [],
             "console": "externalTerminal"
         }

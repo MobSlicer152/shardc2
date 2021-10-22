@@ -20,6 +20,7 @@
 		"windows.h": "c",
 		"compiler_fixups.h": "c",
 		"string.h": "c",
-		"phnt.h": "c"
+		"phnt.h": "c",
+		"stdbool.h": "c"
 	}
 }

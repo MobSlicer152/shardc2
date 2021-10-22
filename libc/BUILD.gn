@@ -43,6 +43,7 @@ shared_library("c") {
     "include",
   ]
   defines = [ "_LIBC_BUILD" ]
+  ldflags = []
 
   sources = [
     "include/internal/compiler_fixups.h",
@@ -82,7 +83,7 @@ shared_library("c") {
 
     if (is_win) {
       sources += [
-        "include/internal/win32/asmdefs.asm",
+        #"include/internal/win32/asmdefs.asm",
         "src/misc/x86_64/stubs.asm",
         "src/stdlib/x86_64/cpuid.asm",
         "src/string/x86_64/memset.asm",

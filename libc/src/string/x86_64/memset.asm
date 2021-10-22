@@ -32,7 +32,6 @@ i DQ 0
 
 .code
 
-PUBLIC memset
 memset PROC
 	; Stack setup
 	push rbp
@@ -196,5 +195,6 @@ memset PROC
 		leave
 		ret
 memset ENDP
+PUBLIC memset
 
 END

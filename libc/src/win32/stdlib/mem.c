@@ -22,33 +22,27 @@
 #include "internal/win32/defs.h"
 #include "internal/win32/ldr.h"
 
-_LIBC_DLLSYM void *__alloc(size_t size)
+_LIBC_DLLSYM void *__alloc(size_t *size)
 {
 	uint32_t status;
+	size_t orig_size = *size;
 	uint8_t *ret = NULL;
-	size_t real_size = size + sizeof(struct __basic_alloc_info);
-	struct __basic_alloc_info *info;
 	size_t free_mem;
 
 	// Check if there's even enough free memory (doesn't work on Windows 7)
 	free_mem = __get_free_mem();
-	if (real_size > free_mem)
+	if (orig_size > free_mem)
 		return NULL;
 
 	// Request the memory
-	status = __NtAllocateVirtualMemory(-1, &ret, 0, &real_size,
+	status = __NtAllocateVirtualMemory(-1, &ret, 0, size,
 					   MEM_COMMIT | MEM_RESERVE,
 					   PAGE_READWRITE);
-	if (status != 0 || !ret || real_size < size)
+	if (status != 0 || !ret || *size < orig_size)
 		return NULL;
 
-	// Store information for freeing this allocation
-	info = (struct __basic_alloc_info *)ret;
-	info->magic = _ALLOC_BASIC_MAGIC;
-	info->size = real_size;
-
 	// The spec for NtAllocateVirtualMemory guarantees the pages to be zeroed.
-	return ret + sizeof(struct __basic_alloc_info);
+	return ret;
 }
 
 _LIBC_DLLSYM size_t __get_free_mem(void)
@@ -76,18 +70,8 @@ _LIBC_DLLSYM size_t __get_free_mem(void)
 	return mem_free;
 }
 
-_LIBC_DLLSYM void __free(void *chunk)
+_LIBC_DLLSYM void __free(void *chunk, size_t size)
 {
-	struct __basic_alloc_info *info =
-		(struct __basic_alloc_info *)((uint8_t *)chunk -
-					      sizeof(struct __basic_alloc_info));
-	size_t size;
-
-	// Check the pointer (avoid wasting a syscall)
-	if (!_ALLOC_BASIC_IS_VALID(info))
-		return;
-
 	// Free the memory
-	size = info->size;
-	__NtFreeVirtualMemory(-1, &info, &size, MEM_RELEASE);
+	__NtFreeVirtualMemory(-1, &chunk, &size, MEM_RELEASE);
 }

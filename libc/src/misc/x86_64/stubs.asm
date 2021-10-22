@@ -23,21 +23,20 @@ EXTERN _Exit:PROC
 .code
 
 __security_check_cookie PROC
-	push rbp
-	mov rbp, rsp
-	
-	; Get the security cookie and check it against this one
-	mov r10, __security_cookie
-	cmp rcx, r10
-	jne die
+;	push rbp
+;	mov rbp, rsp
 
-	leave
+	; Get the security cookie and check it against this one
+;	cmp rcx, __security_cookie
+;	jne die
+
+;	leave
 	ret
 
 	; Exit
-	die:
-		mov rcx, 69
-		call _Exit
+;	die:
+;		mov rcx, 69
+;		call _Exit
 __security_check_cookie ENDP
 PUBLIC __security_check_cookie
 

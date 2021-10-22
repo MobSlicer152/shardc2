@@ -46,10 +46,10 @@ struct __cpu_features __features;
 _LIBC_DLLSYM void __libc_detect_features(void);
 
 // Allocate memory for internal use
-_LIBC_DLLSYM void *__alloc(size_t size);
+_LIBC_DLLSYM void *__alloc(size_t *size);
 
 // Get free memory
 _LIBC_DLLSYM size_t __get_free_mem(void);
 
 // Free memory returned by __alloc
-_LIBC_DLLSYM void __free(void *chunk);
+_LIBC_DLLSYM void __free(void *chunk, size_t returned_size);

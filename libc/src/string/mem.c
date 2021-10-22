@@ -19,6 +19,10 @@
 
 #include <stdint.h>
 
+#ifdef _MSC_VER
+#pragma comment(linker, "/export:memset")
+#endif
+
 _LIBC_DLLSYM void *memcpy(void *restrict dst, const void *restrict src, size_t n)
 {
 	size_t i;
