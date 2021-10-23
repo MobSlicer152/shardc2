@@ -44,10 +44,13 @@ memset PROC
 	mov r12, rcx
 
 	; Check how many bytes can be set at once
-	cmp __features.avx, 1
-	jnz ymm_setup
-	cmp __features.sse, 1
-	jnz xmm_setup
+	lea rcx, __features
+	mov dl, (__cpu_features PTR [rcx]).avx
+	cmp rdx, 1
+	je ymm_setup
+	mov dl, (__cpu_features PTR [rcx]).sse
+	cmp rdx, 1
+	je xmm_setup
 	jmp SHORT byte_copy
 
 	; Setup for different loops
@@ -73,12 +76,13 @@ memset PROC
 
 		; Copy the value
 		mov r11, r12
-		mov rcx, i
-		add r11, QWORD PTR [rcx]
+		add r11, i
 		mov BYTE PTR [r11], r10b
 
 		; Loop
 		jmp SHORT byte_copy
+	; Return
+	jmp return
 
 	; Handle individual bytes until we're aligned properly.
 	byte_align_copy_setup:
@@ -91,18 +95,16 @@ memset PROC
 		mov r11, r9
 		div r11
 		mov rcx, i
-		mov rcx, QWORD PTR [rcx]
 		cmp rcx, r11
 		ja SHORT byte_align_copy_end
 
 		; Copy the value
 		mov r11, r12
-		mov rcx, i
-		add r11, QWORD PTR [rcx]
+		add r11, i
 		mov BYTE PTR [r11], r10b
 
 		; Increase the counter
-		inc QWORD PTR [rcx]
+		inc i
 		jmp SHORT byte_align_copy
 	byte_align_copy_end:
 
@@ -145,8 +147,7 @@ memset PROC
 	; Copy xmmwords. R11 is the current address, RDX is the end address
 	xmm_copy_setup:
 		mov r11, r12
-		mov rcx, i
-		add r11, QWORD PTR [rcx]
+		add r11, i
 		mov rdx, r12
 		add rdx, r8
 	xmm_copy:
@@ -167,8 +168,7 @@ memset PROC
 	; Copy ymmwords. Same as xmm_copy
 	ymm_copy_setup:
 		mov r11, r12
-		mov rcx, i
-		add r11, QWORD PTR [rcx]
+		add r11, i
 		mov rdx, r12
 		add rdx, r8
 	ymm_copy:
