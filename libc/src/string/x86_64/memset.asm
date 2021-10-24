@@ -70,8 +70,7 @@ memset PROC
 		jmp SHORT byte_align_copy_setup
 	byte_copy:
 		; Check exit condition (i < n)
-		mov rcx, i
-		cmp r8, rcx
+		cmp r8, i
 		jae return
 
 		; Copy the value
@@ -80,6 +79,7 @@ memset PROC
 		mov BYTE PTR [r11], r10b
 
 		; Loop
+		inc i
 		jmp SHORT byte_copy
 	; Return
 	jmp return
@@ -94,8 +94,7 @@ memset PROC
 		mov rax, r8
 		mov r11, r9
 		div r11
-		mov rcx, i
-		cmp rcx, r11
+		cmp r11, i
 		ja SHORT byte_align_copy_end
 
 		; Copy the value

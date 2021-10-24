@@ -41,7 +41,10 @@ config("compiler_defaults") {
 
   if (is_debug) {
     if (is_win) {
-      asmflags += [ "/Zi" ]
+      asmflags += [
+        "/Zd",
+        "/Zi",
+      ]
       cflags += [ "/Zi" ]
       ldflags += [ "/debug" ]
     } else {
@@ -55,4 +58,3 @@ config("compiler_defaults") {
     }
   }
 }
-
