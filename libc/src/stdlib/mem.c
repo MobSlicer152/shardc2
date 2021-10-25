@@ -69,7 +69,7 @@ _LIBC_DLLSYM void free(void *chunk)
 					sizeof(struct __alloc_info));
 
 	// Check the magic
-	if (!_ALLOC_IS_VALID(info))
+	if (!chunk || !_ALLOC_IS_VALID(info))
 		return;
 
 	// Mark the chunk as free
