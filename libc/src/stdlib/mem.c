@@ -23,10 +23,7 @@
 #include "internal/crt0.h"
 
 // Start of the linked list of allocated chunks
-struct __alloc_info *__malloc_chunk_list_head;
-
-// Initialize stuff malloc needs
-void __malloc_init(void);
+struct __alloc_info *__malloc_chunk_list_head = NULL;
 
 // Allocate a new chunk with __alloc and do some pointer arithmetic. n can be zero
 struct __alloc_info *__malloc_get_new_chunk(size_t n);
@@ -40,10 +37,6 @@ struct __alloc_info *__malloc_find_free_chunk(size_t size);
 _LIBC_DLLSYM void *malloc(size_t n)
 {
 	struct __alloc_info *info;
-
-	// Make sure the chunk list is initialized
-	if (!__malloc_chunk_list_head)
-		__malloc_init();
 
 	// Return NULL if the size is 0
 	if (!n)
@@ -63,7 +56,8 @@ _LIBC_DLLSYM void *calloc(size_t n, size_t size)
 
 	// malloc a new chunk
 	ret = malloc(real_size);
-	memset(ret, 0, real_size);
+	if (ret)
+		memset(ret, 0, real_size);
 
 	return ret;
 }
@@ -85,12 +79,6 @@ _LIBC_DLLSYM void free(void *chunk)
 	__malloc_defrag_chunk_list();
 }
 
-void __malloc_init(void)
-{
-	// Allocate the head of the chunk list and fill it in
-	__malloc_chunk_list_head = __malloc_get_new_chunk(0);
-}
-
 struct __alloc_info *__malloc_get_new_chunk(size_t size)
 {
 	struct __alloc_info *ret;
@@ -106,6 +94,7 @@ struct __alloc_info *__malloc_get_new_chunk(size_t size)
 	ret->size = real_size;
 	ret->is_free = false;
 	ret->next = __malloc_chunk_list_head;
+	__malloc_chunk_list_head = ret;
 
 	return ret;
 }
@@ -115,7 +104,7 @@ void __malloc_defrag_chunk_list(void)
 	struct __alloc_info *cur;
 
 	// Go through the list
-	for (cur = __malloc_chunk_list_head; cur != __malloc_chunk_list_head; cur = cur->next) {
+	for (cur = __malloc_chunk_list_head; cur != NULL; cur = cur->next) {
 		// Check if the next chunk is free
 		if (cur->is_free && cur->next->is_free) {
 			// Absorb the next chunk
@@ -128,14 +117,13 @@ void __malloc_defrag_chunk_list(void)
 struct __alloc_info *__malloc_find_free_chunk(size_t size)
 {
 	struct __alloc_info *cur;
-	struct __alloc_info *tmp;
-	bool found;
+	bool found = false;
 
 	// Defragment the list
 	__malloc_defrag_chunk_list();
 
 	// Traverse the list and try to find a big enough chunk
-	for (cur = __malloc_chunk_list_head; cur != __malloc_chunk_list_head;
+	for (cur = __malloc_chunk_list_head; cur != NULL;
 	     cur = cur->next) {
 		// Check if we found a suitable chunk
 		if (cur->is_free == true && _ALLOC_REAL_SIZE(cur) >= size) {
@@ -145,10 +133,8 @@ struct __alloc_info *__malloc_find_free_chunk(size_t size)
 	}
 
 	// If no usable chunk was found, get a new one
-	if (!found || cur == __malloc_chunk_list_head) {
-		tmp = __malloc_get_new_chunk(size);
-		cur->next = tmp;
-	}
+	if (!found)
+		cur = __malloc_get_new_chunk(size);
 
 	// Return the chunk
 	return cur;

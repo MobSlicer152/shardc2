@@ -1,5 +1,4 @@
-;  Security cookie check, because MSVC generates code that clobbers the return
-;  value of the function being checked
+;  MASM memset implementation for x86
 ; 
 ;  Copyright 2021 MobSlicer152
 ; 
@@ -17,28 +16,24 @@
 
 OPTION PROLOGUE:NONE
 
-EXTERN __security_cookie:QWORD
-EXTERN _Exit:PROC
+.const
+
+; Constant to fill a qword with the value
+fill_const EQU 0101010101010101h
+
+.data
+INCLUDE internal/win32/asmdefs.asm
+
+; Detected features from mainCRTStartup
+EXTERN __features:__cpu_features
+
+; Counter
+i DQ 0
 
 .code
 
-__security_check_cookie PROC
-	push rbp
-	mov rbp, rsp
-
-	; Get the security cookie and check it against this one
-	cmp rcx, __security_cookie
-	jne die
-
-	leave
-	ret
-
-	; Exit
-	die:
-		mov rcx, 69
-		call _Exit
-__security_check_cookie ENDP
-PUBLIC __security_check_cookie
+memcpy PROC
+memcpy ENDP
+PUBLIC memcpy
 
 END
-

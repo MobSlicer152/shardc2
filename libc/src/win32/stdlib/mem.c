@@ -36,7 +36,7 @@ _LIBC_DLLSYM void *__alloc(size_t *size)
 
 	// Request the memory
 	status = __NtAllocateVirtualMemory(-1, &ret, 0, size,
-					   MEM_COMMIT | MEM_RESERVE,
+					   MEM_COMMIT,
 					   PAGE_READWRITE);
 	if (status != 0 || !ret || *size < orig_size)
 		return NULL;

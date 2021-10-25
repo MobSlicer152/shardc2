@@ -26,7 +26,7 @@ _LIBC_DLLSYM size_t wcstostr(char *restrict dst, const wchar_t *restrict src, si
 	// Process each character
 	for (i = 0; i < n && src[i] != L'\0'; i++) {
 		if (src[i] < UCHAR_MAX)
-			dst[i] = (char)src[i] & UCHAR_MAX;
+			dst[i] = (char)(src[i] & UCHAR_MAX);
 		else
 			dst[i] = invalid_replacement;
 	}
