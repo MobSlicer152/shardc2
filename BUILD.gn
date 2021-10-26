@@ -17,7 +17,7 @@
 group("all") {
   deps = [
     "//libc:c",
-    "//libc:startup",
+    "//libc:crt0",
     "//test:main",
   ]
 }

@@ -166,7 +166,6 @@ toolchain("msvc") {
     exename = "{{output_dir}}/{{target_output_name}}{{output_extension}}"
     pdbname = "${exename}.pdb"
     rspfile = "$exename.rsp"
-
     command = "cmd /c \"link /out:$exename /nologo @$rspfile | findstr /v /i Creating & echo > nul\""
 
     default_output_extension = ".exe"
