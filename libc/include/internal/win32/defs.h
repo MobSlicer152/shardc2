@@ -42,3 +42,9 @@ bool __is_windows_7;
 #elif defined _M_X64
 #define _PEB_LOC (PEB *const)__readgsqword(0x60)
 #endif
+
+// Get the base address of the image for the parent process
+_LIBC_DLLSYM uint8_t *__get_parent_base(void);
+
+// Get the subsystem of a PE image
+_LIBC_DLLSYM uint16_t __get_image_subsystem(uint8_t *base);

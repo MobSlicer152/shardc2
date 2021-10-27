@@ -21,6 +21,16 @@
 
 _LIBC_DLLSYM _Noreturn void _Exit(int status)
 {
+#ifndef NDEBUG
+	uint8_t *parent_base;
+
+	parent_base = __get_parent_base();
+	if (__get_image_subsystem(parent_base) == IMAGE_SUBSYSTEM_WINDOWS_CUI) {
+		while (1)
+			;
+	}
+#endif
+
 	// Make sure this process is cleaned up
 	__NtTerminateProcess(-1, status);
 }

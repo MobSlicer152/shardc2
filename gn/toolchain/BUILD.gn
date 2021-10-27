@@ -109,7 +109,8 @@ toolchain("msvc") {
   tool("rc") {
     command = "rc /nologo /r /fo{{output}} {{source}}"
     description = "RC {{output}}"
-    outputs = [ "{{source_out_dir}}/{{target_output_name}}.{{source_name_part}}.res" ]
+    outputs =
+        [ "{{source_out_dir}}/{{target_output_name}}.{{source_name_part}}.res" ]
   }
   tool("asm") {
     # For MSVC use ml(64)

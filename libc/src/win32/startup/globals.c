@@ -1,4 +1,4 @@
-// Windows entry point and initialization
+// Global variables
 //
 // Copyright 2021 MobSlicer152
 // This file is part of Shard C Library 2
@@ -16,7 +16,6 @@
 // limitations under the License.
 
 #include "internal/crt0.h"
-
 #include "internal/win32/defs.h"
 
 PEB *__peb;

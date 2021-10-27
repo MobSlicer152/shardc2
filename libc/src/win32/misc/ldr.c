@@ -24,26 +24,34 @@ _LIBC_DLLSYM uint8_t *__kernel32;
 
 // Function pointers
 _LIBC_DLLSYM long (*__LdrGetProcedureAddress)(void *base, ANSI_STRING *name,
-				 unsigned long ord, void **func_out) = 0;
+					      unsigned long ord,
+					      void **func_out) = 0;
 _LIBC_DLLSYM long (*__LdrLoadDll)(wchar_t *path, unsigned long *characteristics,
-		     UNICODE_STRING *name, void **base_out) = 0;
+				  UNICODE_STRING *name, void **base_out) = 0;
 _LIBC_DLLSYM long (*__LdrUnloadDll)(void *base) = 0;
 
-_LIBC_DLLSYM long (*__NtAllocateVirtualMemory)(uint64_t process, void *preferred_base,
-				  uintptr_t address_bitmask, size_t *size,
-				  uint32_t alloc_type, uint32_t prot) = 0;
-_LIBC_DLLSYM long (*__NtFreeVirtualMemory)(uint64_t process, void **base, size_t *size,
-			      uint32_t type) = 0;
-_LIBC_DLLSYM long (*__NtProtectVirtualMemory)(uint64_t process, void *base, size_t *size,
-				 uint32_t prot, uint32_t *old_prot) = 0;
-_LIBC_DLLSYM long (*__NtQueryInformationProcess)(uint64_t process,
-				    PROCESSINFOCLASS info_type, void *info,
-				    uint32_t info_buffer_size,
-				    uint32_t *info_size) = 0;
-_LIBC_DLLSYM long (*__NtQuerySystemInformation)(SYSTEM_INFORMATION_CLASS info_type,
-				   void *info, uint32_t info_buffer_size,
-				   uint32_t *info_size) = 0;
-_LIBC_DLLSYM long (*__NtTerminateProcess)(uint64_t handle, uint32_t status) = 0;
+_LIBC_DLLSYM long (*__NtAllocateVirtualMemory)(
+	uintptr_t process, void *preferred_base, uintptr_t address_bitmask,
+	size_t *size, uint32_t alloc_type, uint32_t prot) = 0;
+_LIBC_DLLSYM long (*__NtCloseHandle)(uintptr_t handle) = 0;
+_LIBC_DLLSYM long (*__NtFreeVirtualMemory)(uintptr_t process, void **base,
+					   size_t *size, uint32_t type) = 0;
+_LIBC_DLLSYM long (*__NtOpenProcess)(uintptr_t *handle_out, uint32_t access,
+				     OBJECT_ATTRIBUTES *attrs,
+				     CLIENT_ID *client_id) = 0;
+_LIBC_DLLSYM long (*__NtProtectVirtualMemory)(uintptr_t process, void *base,
+					      size_t *size, uint32_t prot,
+					      uint32_t *old_prot) = 0;
+_LIBC_DLLSYM long (*__NtQueryInformationProcess)(uintptr_t process,
+						 PROCESSINFOCLASS info_type,
+						 void *info,
+						 uint32_t info_buffer_size,
+						 uint32_t *info_size) = 0;
+_LIBC_DLLSYM long (*__NtQuerySystemInformation)(
+	SYSTEM_INFORMATION_CLASS info_type, void *info,
+	uint32_t info_buffer_size, uint32_t *info_size) = 0;
+_LIBC_DLLSYM long (*__NtTerminateProcess)(uintptr_t handle,
+					  uint32_t status) = 0;
 
 _LIBC_DLLSYM void __load_lib_dep_funcs(PEB *peb)
 {
@@ -88,8 +96,10 @@ _LIBC_DLLSYM void __load_lib_dep_funcs(PEB *peb)
 
 	__NtAllocateVirtualMemory =
 		__load_symbol(__ntdll, edt, "NtAllocateVirtualMemory");
+	__NtCloseHandle = __load_symbol(__ntdll, edt, "NtCloseHandle");
 	__NtFreeVirtualMemory =
 		__load_symbol(__ntdll, edt, "NtFreeVirtualMemory");
+	__NtOpenProcess = __load_symbol(__ntdll, edt, "NtOpenProcess");
 	__NtProtectVirtualMemory =
 		__load_symbol(__ntdll, edt, "NtProtectVirtualMemory");
 	__NtQueryInformationProcess =
@@ -105,8 +115,9 @@ _LIBC_DLLSYM void __load_lib_dep_funcs(PEB *peb)
 		     &__kernel32);
 }
 
-_LIBC_DLLSYM uint32_t __get_symbol_ordinal(void *base, IMAGE_EXPORT_DIRECTORY *edt,
-			      const char *name)
+_LIBC_DLLSYM uint32_t __get_symbol_ordinal(void *base,
+					   IMAGE_EXPORT_DIRECTORY *edt,
+					   const char *name)
 {
 	uint32_t *npt;
 	int cmp;
@@ -134,7 +145,8 @@ _LIBC_DLLSYM uint32_t __get_symbol_ordinal(void *base, IMAGE_EXPORT_DIRECTORY *e
 	return UINT32_MAX;
 }
 
-_LIBC_DLLSYM void *__load_symbol(void *base, IMAGE_EXPORT_DIRECTORY *edt, const char *symbol)
+_LIBC_DLLSYM void *__load_symbol(void *base, IMAGE_EXPORT_DIRECTORY *edt,
+				 const char *symbol)
 {
 	ANSI_STRING name;
 	void *func = NULL;

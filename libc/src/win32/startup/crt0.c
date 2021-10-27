@@ -20,10 +20,6 @@
 #include "internal/win32/defs.h"
 #include "internal/win32/ldr.h"
 
-PEB *__peb;
-struct __cpu_features __features;
-bool __is_windows_7;
-
 void mainCRTStartup(void)
 {
 	int ret = 0;

@@ -23,7 +23,10 @@ static_library("crt0") {
   sources = [ "src/misc/stubs.c" ]
 
   if (is_win) {
-    sources += [ "src/win32/startup/crt0.c", "src/win32/startup/globals.c" ]
+    sources += [
+      "src/win32/startup/crt0.c",
+      "src/win32/startup/globals.c",
+    ]
   } else if (is_linux) {
     sources += [ "src/linux/startup/x86_64/crt0.S" ]
   }
@@ -68,11 +71,12 @@ shared_library("c") {
     sources += [
       "include/internal/win32/defs.h",
       "include/internal/win32/ldr.h",
-      "src/win32/startup/dllmain.c",
-      "src/win32/startup/globals.c",
       "src/win32/misc/ldr.c",
       "src/win32/misc/libc.rc",
       "src/win32/misc/resource.h",
+      "src/win32/startup/dllmain.c",
+      "src/win32/startup/globals.c",
+      "src/win32/misc/util.c",
       "src/win32/stdlib/exit.c",
       "src/win32/stdlib/mem.c",
     ]
