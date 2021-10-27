@@ -100,7 +100,7 @@ if (current_cpu == "x64") {
 toolchain("msvc") {
   tool("cc") {
     depfile = "{{output}}.d"
-    command = "cl /nologo /sourceDependencies $depfile {{defines}} {{include_dirs}} {{cflags}} {{cflags_c}} /c /Tc {{source}} /FS /Fo{{output}}"
+    command = "cl /nologo /FS /sourceDependencies $depfile {{defines}} {{include_dirs}} {{cflags}} {{cflags_c}} /c /Tc {{source}} /FS /Fo{{output}}"
     depsformat = "msvc"
     description = "CC {{output}}"
     outputs =
