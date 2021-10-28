@@ -19,6 +19,11 @@
 
 #include <stdint.h>
 
+#ifdef _MSC_VER
+#pragma function(memcmp)
+#pragma function(strcmp)
+#endif
+
 _LIBC_DLLSYM int memcmp(const void *b1, const void *b2, size_t n)
 {
 	size_t i;

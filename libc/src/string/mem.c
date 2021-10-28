@@ -21,6 +21,9 @@
 
 #ifdef _MSC_VER
 #pragma comment(linker, "/export:memset")
+
+#pragma function(memcpy)
+#pragma function(memset)
 #endif
 
 _LIBC_DLLSYM void *memcpy(void *restrict dst, const void *restrict src, size_t n)

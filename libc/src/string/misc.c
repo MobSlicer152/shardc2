@@ -20,6 +20,10 @@
 #include <stdint.h>
 #include <stdlib.h>
 
+#ifdef _MSC_VER
+#pragma function(strlen)
+#endif
+
 _LIBC_DLLSYM size_t strlen(const char *s)
 {
 	size_t i = 0;
