@@ -21,9 +21,10 @@
 
 #ifdef _MSC_VER
 #pragma comment(linker, "/export:memset")
+
+#pragma function(memcpy, memset)
 #endif
 
-#if !defined NDEBUG || !defined _MSC_VER
 _LIBC_DLLSYM void *memcpy(void *restrict dst, const void *restrict src, size_t n)
 {
 	size_t i;
@@ -34,4 +35,3 @@ _LIBC_DLLSYM void *memcpy(void *restrict dst, const void *restrict src, size_t n
 
 	return dst;
 }
-#endif

@@ -52,7 +52,7 @@ config("compiler_defaults") {
     }
   } else {
     if (is_win) {
-      cflags += [ "/O2" ]
+      cflags += [ "/O2", "/Oi-" ]
     } else {
       cflags += [ "-O2" ]
     }

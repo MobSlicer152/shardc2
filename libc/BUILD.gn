@@ -93,10 +93,8 @@ shared_library("c") {
         #"include/internal/win32/asmdefs.asm",
         "src/misc/x86_64/stubs.asm",
         "src/stdlib/x86_64/cpuid.asm",
+        "src/string/x86_64/memset.asm",
       ]
-      if (!is_debug) {
-        sources += [ "src/string/x86_64/memset.asm" ]
-      }
     } else if (is_linux) {
       sources += [
         "src/stdlib/x86_64/cpuid.S",
