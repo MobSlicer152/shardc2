@@ -9,7 +9,10 @@
 #else
 #ifdef _MSC_VER
 #define _LIBC_DLLSYM extern __declspec(dllimport)
+
+#ifndef _ACRTIMP
 #define _ACRTIMP __declspec(dllimport)
+#endif // !_ACRTIMP
 #else
 #define _LIBC_DLLSYM extern
 #endif
