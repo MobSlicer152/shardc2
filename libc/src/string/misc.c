@@ -20,10 +20,7 @@
 #include <stdint.h>
 #include <stdlib.h>
 
-#ifdef _MSC_VER
-#pragma function(strlen)
-#endif
-
+#if !defined NDEBUG || !defined _MSC_VER
 _LIBC_DLLSYM size_t strlen(const char *s)
 {
 	size_t i = 0;
@@ -33,3 +30,4 @@ _LIBC_DLLSYM size_t strlen(const char *s)
 
 	return i;
 }
+#endif

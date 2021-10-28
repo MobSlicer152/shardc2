@@ -19,11 +19,7 @@
 
 #include <stdint.h>
 
-#ifdef _MSC_VER
-#pragma function(memcmp)
-#pragma function(strcmp)
-#endif
-
+#if !defined NDEBUG || !defined _MSC_VER
 _LIBC_DLLSYM int memcmp(const void *b1, const void *b2, size_t n)
 {
 	size_t i;
@@ -49,3 +45,4 @@ _LIBC_DLLSYM int strcmp(const char *s1, const char *s2)
 	// They aren't equal if they're not the same length
 	return memcmp(s1, s2, strlen(s1));
 }
+#endif
