@@ -78,11 +78,7 @@ _LIBC_DLLSYM void __load_lib_dep_funcs(PEB *peb)
 	__ntdll = cur_dll->DllBase;
 	dos_hdr = (IMAGE_DOS_HEADER *)__ntdll;
 	nt_hdrs = (IMAGE_NT_HEADERS *)(__ntdll + dos_hdr->e_lfanew);
-	edt = (IMAGE_EXPORT_DIRECTORY
-		       *)(__ntdll +
-			  nt_hdrs->OptionalHeader
-				  .DataDirectory[IMAGE_DIRECTORY_ENTRY_EXPORT]
-				  .VirtualAddress);
+	edt = __get_export_dir(__ntdll);
 
 	// Detect if this is Windows 7
 	__is_windows_7 = nt_hdrs->OptionalHeader.MajorImageVersion <= 6 &&
@@ -143,6 +139,21 @@ _LIBC_DLLSYM uint32_t __get_symbol_ordinal(void *base,
 	}
 
 	return UINT32_MAX;
+}
+
+_LIBC_DLLSYM IMAGE_EXPORT_DIRECTORY *__get_export_dir(void *base)
+{
+	uint8_t *base2 = base;
+	IMAGE_DOS_HEADER *dos_hdr;
+	IMAGE_NT_HEADERS *nt_hdrs;
+
+	dos_hdr = (IMAGE_DOS_HEADER *)base2;
+	nt_hdrs = (IMAGE_NT_HEADERS *)(base2 + dos_hdr->e_lfanew);
+	return (IMAGE_EXPORT_DIRECTORY
+			*)(base2 +
+			   nt_hdrs->OptionalHeader
+				   .DataDirectory[IMAGE_DIRECTORY_ENTRY_EXPORT]
+				   .VirtualAddress);
 }
 
 _LIBC_DLLSYM void *__load_symbol(void *base, IMAGE_EXPORT_DIRECTORY *edt,

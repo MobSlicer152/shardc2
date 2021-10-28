@@ -33,6 +33,9 @@ _LIBC_DLLSYM uint32_t __get_symbol_ordinal(void *base,
 					   IMAGE_EXPORT_DIRECTORY *edt,
 					   const char *name);
 
+// Gets the export directory from a DLL
+_LIBC_DLLSYM IMAGE_EXPORT_DIRECTORY *__get_export_dir(void *base);
+
 // Loads an exported symbol from the DLL mapped at base
 _LIBC_DLLSYM void *__load_symbol(void *base, IMAGE_EXPORT_DIRECTORY *edt,
 				 const char *symbol);
