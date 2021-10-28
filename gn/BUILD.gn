@@ -15,6 +15,8 @@
 #  limitations under the License.
 
 config("compiler_defaults") {
+  defines = []
+
   if (is_win) {
     asmflags = [
       "/Cp",
@@ -51,6 +53,8 @@ config("compiler_defaults") {
       cflags += [ "-g" ]
     }
   } else {
+    defines += [ "NDEBUG=1" ]
+
     if (is_win) {
       cflags += [ "/O2", "/Oi-" ]
     } else {
