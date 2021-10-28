@@ -74,9 +74,9 @@ shared_library("c") {
       "src/win32/misc/ldr.c",
       "src/win32/misc/libc.rc",
       "src/win32/misc/resource.h",
+      "src/win32/misc/util.c",
       "src/win32/startup/dllmain.c",
       "src/win32/startup/globals.c",
-      "src/win32/misc/util.c",
       "src/win32/stdlib/exit.c",
       "src/win32/stdlib/mem.c",
     ]
@@ -93,8 +93,10 @@ shared_library("c") {
         #"include/internal/win32/asmdefs.asm",
         "src/misc/x86_64/stubs.asm",
         "src/stdlib/x86_64/cpuid.asm",
-        "src/string/x86_64/memset.asm",
       ]
+      if (!is_debug) {
+        sources += [ "src/string/x86_64/memset.asm" ]
+      }
     } else if (is_linux) {
       sources += [
         "src/stdlib/x86_64/cpuid.S",
