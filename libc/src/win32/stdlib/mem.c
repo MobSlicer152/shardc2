@@ -47,27 +47,32 @@ _LIBC_DLLSYM void *__alloc(size_t *size)
 
 _LIBC_DLLSYM size_t __get_free_mem(void)
 {
-	SYSTEM_BASIC_INFORMATION sys_info;
-	VM_COUNTERS mem_usage;
-	size_t mem_total;
-	size_t mem_free;
+	if (__is_windows_7) {
+		SYSTEM_BASIC_INFORMATION sys_info = {0};
+		VM_COUNTERS vm_counters = {0};
+		size_t mem_total;
+		size_t mem_free;
 
-	// Get system information
-	__NtQuerySystemInformation(SystemBasicInformation, &sys_info,
-				   sizeof(SYSTEM_BASIC_INFORMATION), NULL);
+		// Get information about the system and this process
+		__NtQuerySystemInformation(SystemBasicInformation, &sys_info,
+					   sizeof(SYSTEM_BASIC_INFORMATION), NULL);
+		__NtQueryInformationProcess(-1, ProcessVmCounters, &vm_counters,
+					    sizeof(VM_COUNTERS), NULL);
 
-	// Calculate total memory
-	mem_total = (sys_info.MaximumUserModeAddress -
-		     sys_info.MinimumUserModeAddress) +
-		    1;
+		// Calculate the memory available
+		mem_total = (sys_info.MaximumUserModeAddress -
+			     sys_info.MinimumUserModeAddress) + 1;
+		mem_free = mem_total - vm_counters.VirtualSize;
+		return mem_free;
+	} else {
+		SYSTEM_MEMORY_USAGE_INFORMATION mem_info = {0};
 
-	// Query memory in use
-	__NtQueryInformationProcess(-1, ProcessVmCounters, &mem_usage,
-				    sizeof(VM_COUNTERS), NULL);
+		// Query memory in use
+		__NtQuerySystemInformation(SystemMemoryUsageInformation, &mem_info,
+					   sizeof(SYSTEM_MEMORY_USAGE_INFORMATION), NULL);
 
-	// Calculate free memory
-	mem_free = mem_total - mem_usage.VirtualSize;
-	return mem_free;
+		return mem_info.AvailableBytes;
+	}
 }
 
 _LIBC_DLLSYM void __free(void *chunk, size_t size)

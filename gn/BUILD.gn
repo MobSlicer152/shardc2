@@ -17,7 +17,15 @@
 config("compiler_defaults") {
   defines = []
 
-  if (is_win) {
+  if (!is_win || use_clang) {
+    cflags = [
+      "-ffreestanding",
+      "-Wall",
+      "-Wextra",
+      "-std=c2x"
+    ]
+    ldflags = [ "-nostdlib" ]
+  } else if (is_win) {
     asmflags = [
       "/Cp",
       "/Cx",
@@ -31,34 +39,30 @@ config("compiler_defaults") {
       "/nodefaultlib",
       "/subsystem:console",
     ]
-  } else {
+  } else if (!is_win) {
     cflags = [
-      "-ffreestanding",
       "-fPIC",
-      "-Wall",
-      "-Wextra",
     ]
-    ldflags = [ "-nostdlib" ]
   }
 
   if (is_debug) {
-    if (is_win) {
+    if (!is_win || use_clang) {
+      cflags += [ "-g" ]
+    } else if (is_win) {
       asmflags += [
         "/Zd",
         "/Zi",
       ]
       cflags += [ "/Zi" ]
       ldflags += [ "/debug" ]
-    } else {
-      cflags += [ "-g" ]
     }
   } else {
     defines += [ "NDEBUG=1" ]
 
-    if (is_win) {
-      cflags += [ "/O2", "/Oi-" ]
-    } else {
+    if (!is_win || use_clang) {
       cflags += [ "-O2" ]
+    } else {
+      cflags += [ "/O2", "/Oi-" ]
     }
   }
 }

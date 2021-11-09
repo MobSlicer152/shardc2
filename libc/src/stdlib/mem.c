@@ -106,7 +106,7 @@ void __malloc_defrag_chunk_list(void)
 	// Go through the list
 	for (cur = __malloc_chunk_list_head; cur != NULL; cur = cur->next) {
 		// Check if the next chunk is free
-		if (cur->is_free && cur->next->is_free) {
+		if (cur->next && cur->is_free && cur->next->is_free) {
 			// Absorb the next chunk
 			cur->size += cur->next->size;
 			cur->next = cur->next->next;
@@ -117,6 +117,7 @@ void __malloc_defrag_chunk_list(void)
 struct __alloc_info *__malloc_find_free_chunk(size_t size)
 {
 	struct __alloc_info *cur;
+	struct __alloc_info *split;
 	bool found = false;
 
 	// Defragment the list
@@ -126,7 +127,7 @@ struct __alloc_info *__malloc_find_free_chunk(size_t size)
 	for (cur = __malloc_chunk_list_head; cur != NULL;
 	     cur = cur->next) {
 		// Check if we found a suitable chunk
-		if (cur->is_free == true && _ALLOC_REAL_SIZE(cur) >= size) {
+		if (cur->is_free && _ALLOC_REAL_SIZE(cur) >= size) {
 			found = true;
 			break;
 		}
@@ -135,6 +136,20 @@ struct __alloc_info *__malloc_find_free_chunk(size_t size)
 	// If no usable chunk was found, get a new one
 	if (!found)
 		cur = __malloc_get_new_chunk(size);
+
+	// Split the chunk if possible
+	if (cur->size >= (sizeof(struct __alloc_info) + size)) {
+		split = (struct __alloc_info *)((uint8_t *)cur + sizeof(struct __alloc_info) + size);
+		split->magic = _ALLOC_MAGIC;
+		split->size = cur->size - (sizeof(struct __alloc_info) + size);
+		split->is_free = true;
+		split->next = cur->next;
+		cur->next = split;
+		cur->size = size;
+	}
+
+	// Mark this chunk as in use
+	cur->is_free = false;
 
 	// Return the chunk
 	return cur;

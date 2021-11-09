@@ -1,4 +1,4 @@
-// Linux system call wrapper
+// AT&T version of memset.asm
 //
 // Copyright 2021 MobSlicer152
 //
@@ -14,14 +14,5 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-.section .text
 
-.global __syscall
-__syscall:
-	// No stack setup, just put the number into RAX
-	popq %rax
-
-	// Make the syscall
-	syscall
-	ret
 

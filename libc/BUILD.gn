@@ -53,6 +53,7 @@ shared_library("c") {
     "include/internal/crt0.h",
     "include/stdlib.h",
     "include/string.h",
+    "include/unistd.h",
     "include/wchar.h",
     "src/misc/stubs.c",
     "src/stdlib/convert.c",
@@ -97,6 +98,7 @@ shared_library("c") {
       ]
     } else if (is_linux) {
       sources += [
+        "src/linux/unistd/x86_64/syscall.S",
         "src/stdlib/x86_64/cpuid.S",
         "src/string/x86_64/memset.S",
       ]
