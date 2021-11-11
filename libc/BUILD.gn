@@ -27,15 +27,13 @@ static_library("crt0") {
       "src/win32/startup/crt0.c",
       "src/win32/startup/globals.c",
     ]
-  } else if (is_linux) {
-    sources += [ "src/linux/startup/x86_64/crt0.S" ]
   }
 
   if (current_cpu == "x64") {
     if (is_win) {
       sources += [ "src/misc/x86_64/stubs.asm" ]
     } else if (is_linux) {
-      sources += [ "src/linux/x86_64/crt0.S" ]
+      sources += [ "src/linux/startup/x86_64/crt0.S" ]
     }
   }
 }
@@ -82,7 +80,10 @@ shared_library("c") {
       "src/win32/stdlib/mem.c",
     ]
   } else if (is_linux) {
-    sources += [ "src/linux/startup/init.c" ]
+    sources += [
+      "src/linux/startup/init.c",
+      "src/linux/stdlib/exit.c",
+    ]
   }
 
   if (current_cpu == "x64") {

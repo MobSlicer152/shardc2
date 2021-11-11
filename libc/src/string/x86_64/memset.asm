@@ -46,10 +46,10 @@ memset PROC
 	; Check how many bytes can be set at once
 	lea rcx, __features
 	mov dl, (__cpu_features PTR [rcx]).avx
-	cmp rdx, 1
+	cmp dl, 1
 	je ymm_setup
 	mov dl, (__cpu_features PTR [rcx]).sse
-	cmp rdx, 1
+	cmp dl, 1
 	je xmm_setup
 	jmp SHORT byte_copy
 
@@ -65,7 +65,7 @@ memset PROC
 		; Check n
 		cmp r8, 16
 		jle SHORT byte_copy
-		mov r9, 32 ; Alight the address to 16 bytes
+		mov r9, 16 ; Align the address to 16 bytes
 		mov r13, xmm_fill_static_word ; Set the label to jump to
 		jmp SHORT byte_align_copy_setup
 	byte_copy:
@@ -84,13 +84,13 @@ memset PROC
 	; Return
 	jmp return
 
-	; Handle individual bytes until we're aligned properly.
+	; Handle individual bytes until the pointer is aligned properly.
 	byte_align_copy_setup:
 		cmp r8, 0 ; Skip to avoid copying 1 byte if n is 0
 		je SHORT byte_align_copy_end
 	byte_align_copy:
-		; Check our exit condition
-		xor rdx, rdx
+		; Check the exit condition
+		xor edx, edx
 		mov rax, r8
 		mov r11, r9
 		div r11
@@ -138,6 +138,7 @@ memset PROC
 	c_is_not_zero_ymm:
 		mov rcx, fill_const
 		movzx r11, r10b
+		imul rcx, r11
 		movq xmm0, r11
 		movlhps xmm0, xmm0
 		vpbroadcastb ymm0, xmm0
@@ -151,10 +152,8 @@ memset PROC
 		add rdx, r8
 	xmm_copy:
 		; Check exit condition
-		add r11, 16
 		cmp r11, rdx
-		ja SHORT xmm_copy_end
-		sub r11, 16
+		jae SHORT xmm_copy_end
 
 		; Copy
 		movdqu XMMWORD PTR [r11], xmm0
@@ -172,10 +171,8 @@ memset PROC
 		add rdx, r8
 	ymm_copy:
 		; Check exit condition
-		add r11, 32
 		cmp r11, rdx
-		ja SHORT ymm_copy_end
-		sub r11, 32
+		jae SHORT ymm_copy_end
 
 		; Copy
 		vmovdqu YMMWORD PTR [r11], ymm0

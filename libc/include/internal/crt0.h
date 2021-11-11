@@ -22,6 +22,7 @@
 
 #include <stdbool.h>
 #include <stdint.h>
+#include <stdlib.h>
 
 // Signature for main
 extern int main(int argc, char **argv);
@@ -40,7 +41,7 @@ struct __cpu_features {
 };
 
 // Detected CPU features for use by memset and stuff
-struct __cpu_features __features;
+extern struct __cpu_features __features;
 
 // Detect CPU features
 _LIBC_DLLSYM void __libc_detect_features(void);

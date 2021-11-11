@@ -22,7 +22,7 @@ config("compiler_defaults") {
       "-ffreestanding",
       "-Wall",
       "-Wextra",
-      "-std=c2x"
+      "-std=c2x",
     ]
     ldflags = [ "-nostdlib" ]
   } else if (is_win) {
@@ -39,10 +39,10 @@ config("compiler_defaults") {
       "/nodefaultlib",
       "/subsystem:console",
     ]
-  } else if (!is_win) {
-    cflags = [
-      "-fPIC",
-    ]
+  }
+
+  if (is_linux) {
+    cflags += [ "-fPIC", "-fPIE" ]
   }
 
   if (is_debug) {
@@ -62,7 +62,10 @@ config("compiler_defaults") {
     if (!is_win || use_clang) {
       cflags += [ "-O2" ]
     } else {
-      cflags += [ "/O2", "/Oi-" ]
+      cflags += [
+        "/O2",
+        "/Oi-",
+      ]
     }
   }
 }

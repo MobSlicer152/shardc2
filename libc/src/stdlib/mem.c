@@ -19,11 +19,12 @@
 
 #include <stdbool.h>
 #include <stdint.h>
+#include <string.h>
 
 #include "internal/crt0.h"
 
 // Start of the linked list of allocated chunks
-struct __alloc_info *__malloc_chunk_list_head = NULL;
+static struct __alloc_info *__malloc_chunk_list_head = NULL;
 
 // Allocate a new chunk with __alloc and do some pointer arithmetic. n can be zero
 struct __alloc_info *__malloc_get_new_chunk(size_t n);

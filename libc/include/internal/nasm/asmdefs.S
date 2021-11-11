@@ -1,4 +1,4 @@
-;  Linux system call wrapper
+;  Miscellaneous assembly definitions for Linux
 ;
 ;  Copyright 2021 MobSlicer152
 ;
@@ -14,14 +14,10 @@
 ;  See the License for the specific language governing permissions and
 ;  limitations under the License.
 
-SECTION .text
-
-GLOBAL __syscall
-__syscall:
-	; No stack setup, just put the number into RAX
-	pop rax
-
-	; Make the syscall
-	syscall
-	ret
+struc __cpu_features
+	sse resb 1
+	avx resb 1
+	_rdrand resb 1
+	is_it_hammer_time resb 1
+endstruc
 

@@ -33,6 +33,5 @@
 // Generic system call, good for when I was too lazy to make a wrapper
 extern __reg_size_t __syscall(__reg_size_t param1, __reg_size_t param2,
 			      __reg_size_t param3, __reg_size_t param4,
-			      __reg_size_t param5, __reg_size_t param6, ...,
-			      __reg_size_t number);
+			      __reg_size_t param5, __reg_size_t param6, ...);
 

@@ -17,9 +17,9 @@
 
 #include <wchar.h>
 
-_LIBC_DLLSYM wint_t towlower(wint_t c)
+_LIBC_DLLSYM wchar_t towlower(wchar_t c)
 {
-	wint_t c2 = c;
+	wchar_t c2 = c;
 
 	if (c2 >= L'A' && c2 <= L'Z')
 		c2 += L' ';
