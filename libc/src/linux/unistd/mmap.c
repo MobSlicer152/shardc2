@@ -1,4 +1,4 @@
-// mmap abstraction for malloc
+// mmap and related functions
 //
 // copyright 2021 mobslicer152
 // this file is part of shard c library 2
@@ -15,26 +15,17 @@
 // see the license for the specific language governing permissions and
 // limitations under the license.
 
-#include "internal/crt0.h"
-
-#include "sys/mman.h"
-#include "stdint.h"
 #include "unistd.h"
+#include "sys/mman.h"
 
-_LIBC_DLLSYM void *__alloc(size_t *size)
+_LIBC_DLLSYM void *mmap(void *addr, size_t len, int prot, int flags, int fd,
+	   off_t offset)
 {
-	uint8_t *ret;
-
-	// mmap
-	ret = mmap(NULL, *size, PROT_READ | PROT_WRITE, MAP_ANONYMOUS, 0, 0);
-	if (ret == MAP_FAILED)
-		*size = 0;
-
-	return ret;
+	return (void *)__syscall(__NR_mmap, (__reg_size_t)addr, len, prot, flags, fd, offset);
 }
 
-_LIBC_DLLSYM void __free(void *chunk, size_t size)
+_LIBC_DLLSYM int munmap(void *addr, size_t len)
 {
-	munmap(chunk, size);
+	return __syscall(__NR_munmap, (__reg_size_t)addr, len, 0, 0, 0, 0);
 }
 

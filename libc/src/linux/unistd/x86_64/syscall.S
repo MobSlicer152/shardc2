@@ -18,10 +18,22 @@ SECTION .text
 
 GLOBAL __syscall
 __syscall:
-	; No stack setup, just put the number into RAX
-	pop rax
+	push rbp
+	mov rbp, rsp
+
+	; Shift arguments around
+	mov rax, rdi
+	mov rdi, rsi
+	mov rsi, rdx
+	mov rdx, rcx
+	mov r10, r8
+	mov r8, r9
+	mov r9, QWORD [rsp + 8]
 
 	; Make the syscall
 	syscall
+
+	; Return
+	leave
 	ret
 

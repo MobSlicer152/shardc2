@@ -1,4 +1,4 @@
-// mmap abstraction for malloc
+// POSIX types
 //
 // copyright 2021 mobslicer152
 // this file is part of shard c library 2
@@ -15,26 +15,14 @@
 // see the license for the specific language governing permissions and
 // limitations under the license.
 
-#include "internal/crt0.h"
+#pragma once
 
-#include "sys/mman.h"
-#include "stdint.h"
-#include "unistd.h"
+#ifdef __linux__
+#include <asm/posix_types.h>
 
-_LIBC_DLLSYM void *__alloc(size_t *size)
-{
-	uint8_t *ret;
-
-	// mmap
-	ret = mmap(NULL, *size, PROT_READ | PROT_WRITE, MAP_ANONYMOUS, 0, 0);
-	if (ret == MAP_FAILED)
-		*size = 0;
-
-	return ret;
-}
-
-_LIBC_DLLSYM void __free(void *chunk, size_t size)
-{
-	munmap(chunk, size);
-}
+// Linux provides all these types
+typedef __kernel_off_t off_t;
+typedef __kernel_loff_t off64_t;
+typedef __kernel_ssize_t ssize_t;
+#endif
 

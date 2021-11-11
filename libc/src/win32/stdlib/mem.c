@@ -16,6 +16,7 @@
 // limitations under the License.
 
 #include "stdlib.h"
+#include "stdint.h"
 #include "string.h"
 
 #include "internal/crt0.h"

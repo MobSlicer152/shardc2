@@ -1,4 +1,4 @@
-// mmap abstraction for malloc
+// mmap and related functions and definitions
 //
 // copyright 2021 mobslicer152
 // this file is part of shard c library 2
@@ -15,26 +15,25 @@
 // see the license for the specific language governing permissions and
 // limitations under the license.
 
-#include "internal/crt0.h"
+#pragma once
 
-#include "sys/mman.h"
-#include "stdint.h"
-#include "unistd.h"
+#include <stddef.h>
+#include <stdint.h>
 
-_LIBC_DLLSYM void *__alloc(size_t *size)
-{
-	uint8_t *ret;
+#ifdef __linux__
+// Linux kernel's definitions for MAP_ constants
+#include <asm/mman.h>
+#endif // __linux__
 
-	// mmap
-	ret = mmap(NULL, *size, PROT_READ | PROT_WRITE, MAP_ANONYMOUS, 0, 0);
-	if (ret == MAP_FAILED)
-		*size = 0;
+#include "internal/posix_types.h"
 
-	return ret;
-}
+// Failed mmap result
+#define MAP_FAILED ((void *)-1)
 
-_LIBC_DLLSYM void __free(void *chunk, size_t size)
-{
-	munmap(chunk, size);
-}
+// Map empty pages or a file into memory
+_LIBC_DLLSYM void *mmap(void *addr, size_t len, int prot, int flags, int fd,
+		  off_t offset);
+
+// Unmap a mapping
+_LIBC_DLLSYM int munmap(void *addr, size_t len);
 

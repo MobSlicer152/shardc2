@@ -22,5 +22,6 @@
 _LIBC_DLLSYM _Noreturn void _Exit(int status)
 {
 	// Make sure this process is cleaned up
-	__syscall(status, 0, 0, 0, 0, 0, __NR_exit);
+	while (1)
+		__syscall(__NR_exit, status, 0, 0, 0, 0, 0);
 }

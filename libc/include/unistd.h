@@ -15,23 +15,23 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#pragma once
+
 #include <stddef.h>
 #include <stdint.h>
 
 #ifdef _MSC_VER
 #include <internal/win32/defs.h>
 #elif defined __linux__
-#if defined __i386__
-#include <asm/unistd_32.h>
-#else
-#include <asm/unistd_64.h>
-#endif // __i386__
+#include <asm/unistd.h>
 #endif // _MSC_VER
 
 #include "internal/crt0.h"
+#include "internal/posix_types.h"
 
 // Generic system call, good for when I was too lazy to make a wrapper
-extern __reg_size_t __syscall(__reg_size_t param1, __reg_size_t param2,
-			      __reg_size_t param3, __reg_size_t param4,
-			      __reg_size_t param5, __reg_size_t param6, ...);
+_LIBC_DLLSYM __reg_size_t __syscall(__reg_size_t num, __reg_size_t param1,
+			      __reg_size_t param2, __reg_size_t param3,
+			      __reg_size_t param4, __reg_size_t param5,
+			      __reg_size_t param6);
 

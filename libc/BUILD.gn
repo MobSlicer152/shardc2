@@ -49,6 +49,8 @@ shared_library("c") {
   sources = [
     "include/internal/compiler_fixups.h",
     "include/internal/crt0.h",
+    "include/internal/posix_types.h",
+    "include/sys/mman.h",
     "include/stdlib.h",
     "include/string.h",
     "include/unistd.h",
@@ -83,6 +85,8 @@ shared_library("c") {
     sources += [
       "src/linux/startup/init.c",
       "src/linux/stdlib/exit.c",
+      "src/linux/stdlib/mem.c",
+      "src/linux/unistd/mmap.c"
     ]
   }
 

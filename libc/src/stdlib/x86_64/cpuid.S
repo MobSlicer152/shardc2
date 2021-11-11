@@ -42,4 +42,5 @@ _cpuid:
 	mov QWORD [r9], rdx
 
 	pop rbx
+	leave
 	ret
