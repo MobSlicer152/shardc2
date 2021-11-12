@@ -42,16 +42,23 @@ void mainCRTStartup(void)
 	// Convert the commandline to argv
 	cmdline = __peb->ProcessParameters->CommandLine;
 	cmdline2 = calloc(cmdline.MaximumLength, sizeof(wchar_t));
-	wcsncpy(cmdline2, cmdline.Buffer, cmdline.Length);
 	for (i = 0; i < cmdline.Length; i++) {
-		// Skip whitespace
-		while (i + 1 < cmdline.Length && cmdline2[i + 1] == L' ' ||
-		       cmdline2[i + 1] == L'\t')
-			i++;
-		if (i < cmdline.Length && cmdline2[i] == L' ' ||
-		    cmdline2[i] == L'\t') {
+		cmdline2[i] = cmdline.Buffer[i];
+		if (cmdline2[i] == 0) {
+			argc++;
+			break;
+		}
+
+		// Terminate on a whitespace
+		if (cmdline.Buffer[i] == L' ' || cmdline.Buffer[i] == L'\t') {
 			argc++;
 			cmdline2[i] = '\0';
+
+			// Skip remaining whitespace
+			while (i + 1 < cmdline.Length &&
+				       cmdline.Buffer[i + 1] == L' ' ||
+			       cmdline.Buffer[i + 1] == L'\t')
+				i++;
 		}
 	}
 	argv = calloc(argc, sizeof(char *));
@@ -63,6 +70,8 @@ void mainCRTStartup(void)
 		argv[i] = calloc(arg_len, sizeof(char));
 		wcstostr(argv[i], cmdline3, arg_len, '.');
 		cmdline3 += arg_len;
+		while (wcslen(cmdline3) == 0)
+			cmdline3++;
 	}
 
 	// Call main
