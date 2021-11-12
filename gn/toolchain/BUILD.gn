@@ -106,12 +106,6 @@ toolchain("msvc") {
     outputs =
         [ "{{source_out_dir}}/{{target_output_name}}.{{source_name_part}}.obj" ]
   }
-  tool("rc") {
-    command = "rc /nologo /r /fo{{output}} {{source}}"
-    description = "RC {{output}}"
-    outputs =
-        [ "{{source_out_dir}}/{{target_output_name}}.{{source_name_part}}.res" ]
-  }
   tool("asm") {
     # For MSVC use ml(64)
     depfile = "{{output}}.d"
@@ -120,6 +114,9 @@ toolchain("msvc") {
     description = "ASM {{output}}"
     outputs =
         [ "{{source_out_dir}}/{{target_output_name}}.{{source_name_part}}.obj" ]
+  }
+  tool("rc") {
+    command = "../../deps/bin/rc {{include_dirs}} /fo{{output}} {{source}}"
   }
   tool("alink") {
     command = "lib /nologo /out:{{output}} {{inputs}}"

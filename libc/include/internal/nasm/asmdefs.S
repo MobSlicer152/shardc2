@@ -15,9 +15,9 @@
 ;  limitations under the License.
 
 struc __cpu_features
-	sse resb 1
-	avx resb 1
-	_rdrand resb 1
-	is_it_hammer_time resb 1
+	.sse resb 1
+	.avx resb 1
+	.rdrand resb 1
+	.is_it_hammer_time resb 1
 endstruc
 

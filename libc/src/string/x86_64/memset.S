@@ -18,7 +18,7 @@ BITS 64
 DEFAULT REL
 
 ; Detected CPU features
-EXTERN __features:__cpu_features
+EXTERN __features
 
 SECTION .rodata
 
@@ -45,10 +45,10 @@ memset:
 
 	; Check for AVX and SSE
 	mov rcx, __features
-	mov dl, [rcx + avx]
+	mov dl, [rcx + __cpu_features.avx]
 	cmp dl, 1
 	je ymm_setup
-	mov dl, [rcx + sse]
+	mov dl, [rcx + __cpu_features.sse]
 	cmp dl, 1
 	je xmm_setup
 	jmp SHORT byte_copy ; Fast enough

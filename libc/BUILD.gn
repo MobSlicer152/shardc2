@@ -73,7 +73,6 @@ shared_library("c") {
       "include/internal/win32/defs.h",
       "include/internal/win32/ldr.h",
       "src/win32/misc/ldr.c",
-      "src/win32/misc/libc.rc",
       "src/win32/misc/resource.h",
       "src/win32/misc/util.c",
       "src/win32/startup/dllmain.c",
