@@ -24,6 +24,7 @@
 
 _LIBC_DLLSYM uint8_t *__ntdll;
 _LIBC_DLLSYM uint8_t *__kernel32;
+_LIBC_DLLSYM uint8_t *__shell32;
 
 // Initialization function that loads functions from NTDLL and Kernel32 used by the library
 _LIBC_DLLSYM void __load_lib_dep_funcs(PEB *peb);
@@ -69,3 +70,8 @@ _LIBC_DLLSYM long (*__NtQuerySystemInformation)(
 	SYSTEM_INFORMATION_CLASS info_type, void *info,
 	uint32_t info_buffer_size, uint32_t *info_size);
 _LIBC_DLLSYM long (*__NtTerminateProcess)(uintptr_t handle, uint32_t status);
+
+_LIBC_DLLSYM void *(*__LocalFree)(void *chunk);
+
+_LIBC_DLLSYM wchar_t **(*__CommandLineToArgvW)(const wchar_t *cmdline, int *argc);
+

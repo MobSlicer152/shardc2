@@ -23,9 +23,8 @@
 void mainCRTStartup(void)
 {
 	int ret = 0;
-	UNICODE_STRING cmdline;
-	wchar_t *cmdline2;
-	wchar_t *cmdline3;
+	UNICODE_STRING *cmdline;
+	wchar_t **argv_w;
 	char **argv;
 	int argc = 0;
 	size_t i;
@@ -40,39 +39,17 @@ void mainCRTStartup(void)
 	__load_lib_dep_funcs(__peb);
 
 	// Convert the commandline to argv
-	cmdline = __peb->ProcessParameters->CommandLine;
-	cmdline2 = calloc(cmdline.MaximumLength, sizeof(wchar_t));
-	for (i = 0; i < cmdline.Length; i++) {
-		cmdline2[i] = cmdline.Buffer[i];
-		if (cmdline2[i] == 0) {
-			argc++;
-			break;
-		}
-
-		// Terminate on a whitespace
-		if (cmdline.Buffer[i] == L' ' || cmdline.Buffer[i] == L'\t') {
-			argc++;
-			cmdline2[i] = '\0';
-
-			// Skip remaining whitespace
-			while (i + 1 < cmdline.Length &&
-				       cmdline.Buffer[i + 1] == L' ' ||
-			       cmdline.Buffer[i + 1] == L'\t')
-				i++;
-		}
-	}
+	cmdline = &__peb->ProcessParameters->CommandLine;
+	argv_w = __CommandLineToArgvW(cmdline->Buffer, &argc);
 	argv = calloc(argc, sizeof(char *));
-	cmdline3 = cmdline2;
-	for (i = 0; i < argc && cmdline3 - cmdline2 < cmdline.Length; i++) {
-		size_t arg_len = wcslen(cmdline3) + 1;
-
-		// Convert this argument, then advance the pointer
-		argv[i] = calloc(arg_len, sizeof(char));
-		wcstostr(argv[i], cmdline3, arg_len, '.');
-		cmdline3 += arg_len;
-		while (wcslen(cmdline3) == 0)
-			cmdline3++;
+	for (i = 0; i < argc; i++) {
+		size_t arg_len = wcslen(argv_w[i]);
+		argv[i] = calloc(arg_len + 1, sizeof(char));
+		wcstostr(argv[i], argv_w[i], arg_len, '.');
 	}
+
+	// Free the wide arguments
+	__LocalFree(argv_w);
 
 	// Call main
 	ret = main(argc, argv);

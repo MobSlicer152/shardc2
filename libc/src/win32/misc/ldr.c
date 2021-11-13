@@ -21,6 +21,7 @@
 // Base addresses of important DLLs
 _LIBC_DLLSYM uint8_t *__ntdll;
 _LIBC_DLLSYM uint8_t *__kernel32;
+_LIBC_DLLSYM uint8_t *__shell32;
 
 // Function pointers
 _LIBC_DLLSYM long (*__LdrGetProcedureAddress)(void *base, ANSI_STRING *name,
@@ -52,6 +53,11 @@ _LIBC_DLLSYM long (*__NtQuerySystemInformation)(
 	uint32_t info_buffer_size, uint32_t *info_size) = 0;
 _LIBC_DLLSYM long (*__NtTerminateProcess)(uintptr_t handle,
 					  uint32_t status) = 0;
+
+_LIBC_DLLSYM void *(*__LocalFree)(void *chunk) = 0;
+
+_LIBC_DLLSYM wchar_t **(*__CommandLineToArgvW)(const wchar_t *cmdline,
+					       int *argc) = 0;
 
 _LIBC_DLLSYM void __load_lib_dep_funcs(PEB *peb)
 {
@@ -109,6 +115,17 @@ _LIBC_DLLSYM void __load_lib_dep_funcs(PEB *peb)
 	__LdrLoadDll(NULL, NULL,
 		     &(UNICODE_STRING)RTL_CONSTANT_STRING(L"kernel32.dll"),
 		     &__kernel32);
+
+	__LocalFree =
+		__load_symbol(__kernel32, __get_export_dir(__kernel32), "LocalFree");
+
+	// Get shell32's base address
+	__LdrLoadDll(NULL, NULL,
+		     &(UNICODE_STRING)RTL_CONSTANT_STRING(L"shell32.dll"),
+		     &__shell32);
+
+	__CommandLineToArgvW =
+		__load_symbol(__shell32, __get_export_dir(__shell32), "CommandLineToArgvW");
 }
 
 _LIBC_DLLSYM uint32_t __get_symbol_ordinal(void *base,
