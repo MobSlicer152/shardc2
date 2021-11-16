@@ -68,6 +68,11 @@ memset PROC
 		mov r9, 16 ; Align the address to 16 bytes
 		mov r13, xmm_fill_static_word ; Set the label to jump to
 		jmp SHORT byte_align_copy_setup
+	misaligned_fix:
+		; Adjust the registers and reset the counter
+		mov r8, r11
+		add r12, i
+		mov i, 0
 	byte_copy:
 		; Check exit condition (i < n)
 		cmp r8, i
@@ -106,6 +111,12 @@ memset PROC
 		inc i
 		jmp SHORT byte_align_copy
 	byte_align_copy_end:
+
+	; Make sure there's still enough buffer left for the faster copy
+	mov r11, r8
+	sub r11, i
+	cmp r9, r11
+	jle misaligned_fix
 
 	; R13 contains the label that sets the XMM/YMM register up
 	jmp r13

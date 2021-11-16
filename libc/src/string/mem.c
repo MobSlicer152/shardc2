@@ -20,6 +20,7 @@
 #include <stdint.h>
 
 #ifdef _MSC_VER
+#pragma comment(linker, "/export:memcpy")
 #pragma comment(linker, "/export:memset")
 
 #pragma function(memcpy, memset)

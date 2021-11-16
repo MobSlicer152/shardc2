@@ -1,4 +1,4 @@
-;  MASM memset implementation for x86
+;  MASM memcpy implementation for x86
 ;
 ;  Copyright 2021 MobSlicer152
 ;
@@ -18,9 +18,6 @@ OPTION PROLOGUE:NONE
 
 .const
 
-; Constant to fill a qword with the value
-fill_const EQU 0101010101010101h
-
 .data
 INCLUDE internal/win32/asmdefs.asm
 
@@ -33,7 +30,26 @@ i DQ 0
 .code
 
 memcpy PROC
-	
+	; Stack setup
+	push rbp
+	mov rbp, rsp
+
+	; Save RCX and RDX
+	mov r10, rcx
+	mov r11, rdx
+
+	; Check for SSE and AVX
+	lea rcx, __features
+	mov dl, (__cpu_features PTR [rcx]).avx
+	cmp dl, 1
+	je ymm_setup
+	mov dl, (__cpu_features PTR [rcx]).sse
+	cmp dl, 1
+	je xmm_setup
+	jmp SHORT byte_copy
+
+	; Setup for different copy loops
+
 memcpy ENDP
 PUBLIC memcpy
 

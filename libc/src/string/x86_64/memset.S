@@ -69,6 +69,11 @@ memset:
 		mov r11, xmm_fill_static_word
 
 		jmp byte_align_copy_setup
+	misaligned_fix:
+		; Adjust stuff
+		mov r8, r11
+		add rdi, QWORD [i]
+		mov QWORD [i], 0
 	byte_copy:
 		; Check exit conditions
 		cmp r8, QWORD [i]
@@ -107,6 +112,12 @@ memset:
 		inc QWORD [i]
 		jmp SHORT byte_align_copy
 	byte_align_copy_end:
+
+	; Make sure not to go past the end of the buffer
+	mov r11, r8
+	sub r11, QWORD [i]
+	cmp r9, r11
+	jle misaligned_fix
 
 	; RDX has the label to set up for the main loop
 	jmp rdx
