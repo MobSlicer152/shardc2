@@ -76,7 +76,7 @@ memset:
 		mov QWORD [i], 0
 	byte_copy:
 		; Check exit conditions
-		cmp r8, QWORD [i]
+		cmp QWORD [i], r8
 		jae return
 
 		; Copy the current byte
@@ -100,7 +100,7 @@ memset:
 		mov rax, r8
 		mov r11, r9
 		div r11
-		cmp r11, QWORD [i]
+		cmp QWORD [i], rax
 		jae return
 
 		; Copy the value
@@ -198,4 +198,3 @@ memset:
 		mov rax, rdi
 		leave
 		ret
-

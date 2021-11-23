@@ -22,7 +22,7 @@
 
 #include <stdbool.h>
 #include <stdint.h>
-#include <stdlib.h>
+#include "stdlib.h"
 
 // Signature for main
 extern int main(int argc, char **argv);
@@ -31,8 +31,8 @@ extern int main(int argc, char **argv);
 struct __cpu_features {
 #if defined _X86 || defined _X86_64
 	bool avx; // Whether AVX is supported
-	bool sse; // Whether SSE is supported
 	bool avx2; // Whether AVX2 is supported
+	bool sse; // Whether SSE is supported
 	bool rdrand; // Whether RDRAND is supported
 	bool is_it_hammer_time; // Whether it's hammer time or not
 #else

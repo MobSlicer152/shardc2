@@ -27,9 +27,6 @@ INCLUDE internal/win32/asmdefs.asm
 ; Detected features from mainCRTStartup
 EXTERN __features:__cpu_features
 
-; Counter
-i DQ 0
-
 .code
 
 memset PROC
@@ -38,10 +35,14 @@ memset PROC
 	mov rbp, rsp
 	push r12
 	push r13
+	push r14
 
 	; Save registers clobbered by DIV
 	mov r10, rdx
 	mov r12, rcx
+
+	; Set R14 to 0
+	xor r14d, r14d
 
 	; Check how many bytes can be set at once
 	lea rcx, __features
@@ -71,20 +72,20 @@ memset PROC
 	misaligned_fix:
 		; Adjust the registers and reset the counter
 		mov r8, r11
-		add r12, i
-		mov i, 0
+		add r12, r14
+		mov r14, 0
 	byte_copy:
 		; Check exit condition (i < n)
-		cmp r8, i
+		cmp r14, r8
 		jae return
 
 		; Copy the value
 		mov r11, r12
-		add r11, i
+		add r11, r14
 		mov BYTE PTR [r11], r10b
 
 		; Loop
-		inc i
+		add r14, 1
 		jmp SHORT byte_copy
 	; Return
 	jmp return
@@ -99,22 +100,22 @@ memset PROC
 		mov rax, r8
 		mov r11, r9
 		div r11
-		cmp r11, i
+		cmp r14, rax
 		ja SHORT byte_align_copy_end
 
 		; Copy the value
 		mov r11, r12
-		add r11, i
+		add r11, r14
 		mov BYTE PTR [r11], r10b
 
 		; Increase the counter
-		inc i
+		add r14, 1
 		jmp SHORT byte_align_copy
 	byte_align_copy_end:
 
 	; Make sure there's still enough buffer left for the faster copy
 	mov r11, r8
-	sub r11, i
+	sub r11, r14
 	cmp r9, r11
 	jle misaligned_fix
 
@@ -158,7 +159,7 @@ memset PROC
 	; Copy xmmwords. R11 is the current address, RDX is the end address
 	xmm_copy_setup:
 		mov r11, r12
-		add r11, i
+		add r11, r14
 		mov rdx, r12
 		add rdx, r8
 	xmm_copy:
@@ -177,7 +178,7 @@ memset PROC
 	; Copy ymmwords. Same as xmm_copy
 	ymm_copy_setup:
 		mov r11, r12
-		add r11, i
+		add r11, r14
 		mov rdx, r12
 		add rdx, r8
 	ymm_copy:
@@ -196,6 +197,7 @@ memset PROC
 	; Return
 	return:
 		mov rax, r12 ; Most string.h functions return the destination pointer
+		pop r14
 		pop r13
 		pop r12
 		pop rcx

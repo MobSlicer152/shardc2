@@ -155,3 +155,4 @@ struct __alloc_info *__malloc_find_free_chunk(size_t size)
 	// Return the chunk
 	return cur;
 }
+

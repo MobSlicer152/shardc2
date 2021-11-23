@@ -15,7 +15,17 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#include <string.h>
+
+#define ARRAY_SIZE(a) sizeof(a) / sizeof(a[0])
+
 int main(int argc, char *argv[])
 {
+	char a[] = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
+	char b[ARRAY_SIZE(a)];
+
+	memcpy(b, a, ARRAY_SIZE(a));
+	memset(b, 'b', ARRAY_SIZE(b));
+
 	return argc;
 }

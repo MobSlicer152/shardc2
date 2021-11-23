@@ -41,6 +41,8 @@ bool __is_windows_7;
 #define _PEB_LOC (PEB *const)__readfsdword(0x30)
 #elif defined _M_X64
 #define _PEB_LOC (PEB *const)__readgsqword(0x60)
+#elif defined _M_ARM64
+#define _PEB_LOC (PEB *const)(__getReg(18) + 0x60)
 #endif
 
 // Get the base address of the image for the parent process
