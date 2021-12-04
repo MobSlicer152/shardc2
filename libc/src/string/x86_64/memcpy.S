@@ -1,4 +1,4 @@
-;  Linux system call wrapper
+;  NASM memcpy implementation for x86
 ;
 ;  Copyright 2021 MobSlicer152
 ;
@@ -14,26 +14,17 @@
 ;  See the License for the specific language governing permissions and
 ;  limitations under the License.
 
-SECTION .text
+%include "internal/nasm/asmdefs.S"
 
-GLOBAL __syscall
-__syscall:
+.text
+
+GLOBAL memcpy
+memcpy:
+	; Stack setup
 	push rbp
 	mov rbp, rsp
+	
+	; Save RDX
+	mov r8, rdx
 
-	; Shift arguments around
-	mov rax, rdi
-	mov rdi, rsi
-	mov rsi, rdx
-	mov rdx, rcx
-	mov r10, r8
-	mov r8, r9
-	mov r9, QWORD [rsp + 16]
-
-	; Make the syscall
-	syscall
-
-	; Return
-	leave
-	ret
-
+	

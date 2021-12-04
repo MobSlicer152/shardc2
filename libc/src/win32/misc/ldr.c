@@ -128,34 +128,26 @@ _LIBC_DLLSYM void __load_lib_dep_funcs(PEB *peb)
 		__load_symbol(__shell32, __get_export_dir(__shell32), "CommandLineToArgvW");
 }
 
+static uint32_t symbol_cmp(const void *guess, const void **key)
+{
+	void *base = key[0];
+	const char *name = key[1];
+}
+
 _LIBC_DLLSYM uint32_t __get_symbol_ordinal(void *base,
 					   IMAGE_EXPORT_DIRECTORY *edt,
 					   const char *name)
 {
 	uint32_t *npt;
-	int cmp;
-	uint32_t max;
-	uint32_t mid;
-	uint32_t min;
+	uint32_t *ord;
 
 	// Get the name pointer table and export ordinal table
 	npt = (uint32_t *)((uint8_t *)base + edt->AddressOfNames);
 
-	// Do a binary search for the function
-	min = 0;
-	max = edt->NumberOfNames - 1;
-	while (min <= max) {
-		mid = (min + max) >> 1;
-		cmp = strcmp((const char *)((uint8_t *)base + npt[mid]), name);
-		if (cmp < 0)
-			min = mid + 1;
-		else if (cmp > 0)
-			max = mid - 1;
-		else
-			return mid + edt->Base + 1;
-	}
-
-	return UINT32_MAX;
+	// Call bsearch
+	void *key[] = { base, name };
+	ord = (uint32_t *)bsearch(key, npt, edt->NumberOfNames,
+				  sizeof(uint32_t), symbol_cmp);
 }
 
 _LIBC_DLLSYM IMAGE_EXPORT_DIRECTORY *__get_export_dir(void *base)

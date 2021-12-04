@@ -23,6 +23,10 @@
 #ifdef __linux__
 // Linux kernel's definitions for MAP_ constants
 #include <asm/mman.h>
+
+// These seem not to be defined there
+#define MAP_SHARED 0x01
+#define MAP_PRIVATE 0x02
 #endif // __linux__
 
 #include "internal/posix_types.h"

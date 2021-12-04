@@ -47,7 +47,7 @@ _LIBC_DLLSYM void *malloc(size_t n)
 	info = __malloc_find_free_chunk(n);
 
 	// Return the start of the allocation
-	return ++info;
+	return info ? ++info : NULL;
 }
 
 _LIBC_DLLSYM void *calloc(size_t n, size_t size)
@@ -135,8 +135,11 @@ struct __alloc_info *__malloc_find_free_chunk(size_t size)
 	}
 
 	// If no usable chunk was found, get a new one
-	if (!found)
+	if (!found) {
 		cur = __malloc_get_new_chunk(size);
+		if (!cur)
+			return NULL;
+	}
 
 	// Split the chunk if possible
 	if (cur->size >= (sizeof(struct __alloc_info) + size)) {

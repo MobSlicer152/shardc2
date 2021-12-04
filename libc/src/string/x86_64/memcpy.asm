@@ -16,8 +16,6 @@
 
 OPTION PROLOGUE:NONE
 
-.const
-
 .data
 INCLUDE internal/win32/asmdefs.asm
 
@@ -137,8 +135,10 @@ memcpy PROC
 		add r9, r14
 		mov rdx, r12
 		add rdx, r8
+		sub rdx, 1
 		mov rcx, r10
 		add rcx, r8
+		sub rcx, 1
 	ymm_copy:
 		; Check the exit condition
 		cmp r9, rcx
@@ -165,8 +165,10 @@ memcpy PROC
 		add r9, r14
 		mov rdx, r12
 		add rdx, r8
+		sub rdx, 1
 		mov rcx, r10
 		add rcx, r8
+		sub rcx, 1
 	xmm_copy:
 		; Check the exit condition
 		cmp r9, rcx

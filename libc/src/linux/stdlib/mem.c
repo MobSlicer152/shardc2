@@ -26,9 +26,11 @@ _LIBC_DLLSYM void *__alloc(size_t *size)
 	uint8_t *ret;
 
 	// mmap
-	ret = mmap(NULL, *size, PROT_READ | PROT_WRITE, MAP_ANONYMOUS, 0, 0);
-	if (ret == MAP_FAILED)
+	ret = mmap(NULL, *size, PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
+	if (ret == MAP_FAILED || ((int64_t)ret < 0 && (int64_t)ret > -4096)) {
 		*size = 0;
+		ret = NULL;
+	}
 
 	return ret;
 }
