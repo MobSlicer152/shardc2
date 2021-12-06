@@ -17,6 +17,7 @@
 
 # Tests initialization
 executable("main") {
+  include_dirs = [ "//libc/include" ]
   sources = [ "main.c" ]
 
   deps = [ "//libc:crt0", "//libc:c" ]

@@ -40,10 +40,6 @@ struct __alloc_info {
 	struct __alloc_info *next; // Next chunk. NULL if this is the last one
 };
 
-#if defined _X86 || defined _X86_64
-typedef unsigned long long __reg_size_t;
-#endif
-
 // Perform a binary search on a sorted (i.e. by qsort) array
 _LIBC_DLLSYM void *bsearch(const void *key, const void *base, size_t n, size_t size,
 	      int (*cmp)(const void *guess, const void *key));

@@ -27,11 +27,9 @@
 #endif // _MSC_VER
 
 #include "internal/crt0.h"
+#include "internal/compiler_fixups.h"
 #include "internal/posix_types.h"
 
-// Generic system call, good for when I was too lazy to make a wrapper
-_LIBC_DLLSYM __reg_size_t __syscall(__reg_size_t num, __reg_size_t param1,
-			      __reg_size_t param2, __reg_size_t param3,
-			      __reg_size_t param4, __reg_size_t param5,
-			      __reg_size_t param6);
-
+// Generic system call, good for when I was too
+// lazy to make a wrapper (only supports 6 parameters)
+_LIBC_DLLSYM __reg_size_t __syscall(__reg_size_t num, ...);

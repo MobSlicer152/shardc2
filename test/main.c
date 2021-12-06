@@ -17,6 +17,7 @@
 
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
 
 #define ARRAY_SIZE(a) sizeof(a) / sizeof(a[0])
 
@@ -29,6 +30,13 @@ int main(int argc, char *argv[])
 
 	memcpy(b, a, ARRAY_SIZE(a));
 	memset(b, 'b', ARRAY_SIZE(a));
+
+#ifdef __linux__
+	for (int i = 0; i < argc; i++) {
+		__syscall(__NR_write, 1, argv[i], strlen(argv[i]));
+		__syscall(__NR_write, 1, "\n", 1);
+	}
+#endif
 
 	free(b);
 

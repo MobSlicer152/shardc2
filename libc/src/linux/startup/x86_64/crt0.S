@@ -25,8 +25,8 @@ SECTION .text
 GLOBAL _start
 _start:
 	; Put argc and argv in the appropriate registers
-	pop rdi
-	pop rsi
+	mov rdi, [rsp]
+	lea rsi, [rsp + 8]
 
 	call __libc_linux_init wrt ..plt
 
