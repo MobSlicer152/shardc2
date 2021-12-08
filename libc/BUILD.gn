@@ -100,6 +100,8 @@ shared_library("c") {
         "src/stdlib/x86_64/cpuid.asm",
         "src/string/x86_64/memcpy.asm",
         "src/string/x86_64/memset.asm",
+        "src/win32/unistd/x86_64/syscall.asm",
+        "src/win32/unistd/x86_64/syscall.c",
       ]
     } else if (is_linux) {
       sources += [

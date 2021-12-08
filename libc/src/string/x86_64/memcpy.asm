@@ -80,9 +80,7 @@ memcpy PROC
 		mov BYTE PTR [r11], r9b
 
 		; Loop
-		mov r11, r14
-		inc r11
-		mov r14, r11
+		inc r14
 		jmp SHORT byte_copy
 	
 	; Return, this point is only reached from byte_copy

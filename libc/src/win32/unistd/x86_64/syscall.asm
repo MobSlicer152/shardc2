@@ -1,4 +1,4 @@
-;  Linux system call wrapper
+;  Windows NT system call wrapper
 ;
 ;  Copyright 2021 MobSlicer152
 ;
@@ -14,26 +14,29 @@
 ;  See the License for the specific language governing permissions and
 ;  limitations under the License.
 
-SECTION .text
+OPTION PROLOGUE:NONE
 
-GLOBAL __syscall
-__syscall:
+.code
+
+__syscall PROC
 	push rbp
 	mov rbp, rsp
 
-	; Shift arguments around
-	mov rax, rdi
-	mov rdi, rsi
-	mov rsi, rdx
-	mov rdx, rcx
-	mov r10, r8 ; the syscall instruction clobbers RCX, so it goes in R10
+	; Shift parameters up
+	mov eax, ecx
+	mov r10, rdx ; the syscall instruction clobbers RCX, so it goes in R10
+	mov rdx, r8
 	mov r8, r9
-	mov r9, QWORD [rsp + 16]
+	mov r9, QWORD PTR [rsp + 16]
+	mov rcx, QWORD PTR [rsp + 24]
+	mov QWORD PTR [rsp + 16], rcx
+	mov rcx, QWORD PTR [rsp + 32]
+	mov QWORD PTR [rsp + 24], rcx
 
-	; Make the syscall
+	; Do the syscall
 	syscall
 
-	; Return
 	leave
 	ret
-
+__syscall ENDP
+PUBLIC __syscall

@@ -25,12 +25,7 @@ SECTION .rodata
 ; Constant to fill a qword
 fill_const dq 0101010101010101h
 
-SECTION .bss
-
 %include "internal/nasm/asmdefs.S"
-
-; Counter
-i: resq 1
 
 SECTION .text
 
@@ -43,15 +38,18 @@ memset:
 	; Save RDX for DIV
 	mov r8, rdx
 
+	; Clear R10 as a counter
+	xor r10d, r10d
+
 	; Check for AVX and SSE
-	mov rcx, __features
+	lea rcx, [rel __features wrt ..got]
 	mov dl, [rcx + __cpu_features.avx]
 	cmp dl, 1
 	je ymm_setup
 	mov dl, [rcx + __cpu_features.sse]
 	cmp dl, 1
 	je xmm_setup
-	jmp SHORT byte_copy ; Fast enough
+	jmp byte_copy ; Fast enough
 
 	; Setup for the loops (R9 is the alignment, R11 is where to jump after alignment)
 	ymm_setup:
@@ -61,7 +59,7 @@ memset:
 		mov r9, 32 ; Align the address to 32 bytes
 		mov rdx, ymm_fill_static_word
 
-		jmp SHORT byte_align_copy_setup
+		jmp byte_align_copy_setup
 	xmm_setup:
 		cmp r8, 16
 		jle SHORT byte_copy
@@ -72,20 +70,20 @@ memset:
 	misaligned_fix:
 		; Adjust stuff
 		mov r8, r11
-		add rdi, QWORD [i]
-		mov QWORD [i], 0
+		add rdi, r10
+		xor r10d, r10d
 	byte_copy:
 		; Check exit conditions
-		cmp QWORD [i], r8
+		cmp r10, r8
 		jae return
 
 		; Copy the current byte
 		mov r11, rdi
-		add r11, QWORD [i]
+		add r11, r10
 		mov BYTE [r11], sil
 
 		; Loop
-		inc QWORD [rcx]
+		inc r10
 		jmp SHORT byte_copy
 	; Return if execution is here
 	jmp return
@@ -100,22 +98,22 @@ memset:
 		mov rax, r8
 		mov r11, r9
 		div r11
-		cmp QWORD [i], rax
+		cmp r10, rax
 		jae return
 
 		; Copy the value
 		mov r11, rdi
-		add r11, QWORD [i]
+		add r11, r10
 		mov BYTE [r11], sil
 
 		; Increase the counter
-		inc QWORD [i]
+		inc r10
 		jmp SHORT byte_align_copy
 	byte_align_copy_end:
 
 	; Make sure not to go past the end of the buffer
 	mov r11, r8
-	sub r11, QWORD [i]
+	sub r11, r10
 	cmp r9, r11
 	jle misaligned_fix
 
@@ -131,7 +129,7 @@ memset:
 		xorps xmm0, xmm0
 		jmp ymm_copy_setup
 	ymm_c_is_not_zero:
-		mov rcx, QWORD [i]
+		mov rcx, fill_const
 		movzx r11, sil
 		imul rcx, r11
 		movq xmm0, r11
@@ -148,7 +146,7 @@ memset:
 		xorps xmm0, xmm0
 		jmp xmm_copy_setup
 	xmm_c_is_not_zero:
-		mov rcx, QWORD [i]
+		mov rcx, fill_const
 		movzx r11, sil
 		imul rcx, r11
 		movq xmm0, r11
@@ -158,7 +156,7 @@ memset:
 	; AVX copy. R11 is the current address, RDX is the end address
 	ymm_copy_setup:
 		mov r11, rdi
-		add r11, QWORD [i]
+		add r11, r10
 		mov rdx, rdi
 		add rdx, r8
 	ymm_copy:
@@ -177,7 +175,7 @@ memset:
 	; SSE copy. Same as the AVX one
 	xmm_copy_setup:
 		mov r11, rdi
-		add r11, QWORD [i]
+		add r11, r10
 		mov rdx, rdi
 		add rdx, r8
 	xmm_copy:

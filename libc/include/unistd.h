@@ -31,5 +31,14 @@
 #include "internal/posix_types.h"
 
 // Generic system call, good for when I was too
-// lazy to make a wrapper (only supports 6 parameters)
+// lazy to make a wrapper (only supports 6 parameters).
+// Note that while this does support Windows, you're probably
+// better off just using __load_symbol. If you want the likelihood
+// of this breaking to be lower, use __get_syscall_num to
+// get the system call number for Windows.
 _LIBC_DLLSYM __reg_size_t __syscall(__reg_size_t num, ...);
+
+#ifdef _WIN32
+// Get the system call number of an NtXxx function defined in NTDLL
+_LIBC_DLLSYM __reg_size_t __get_syscall_num(void *func);
+#endif

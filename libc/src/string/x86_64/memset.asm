@@ -109,7 +109,7 @@ memset PROC
 		mov BYTE PTR [r11], r10b
 
 		; Increase the counter
-		add r14, 1
+		inc r14
 		jmp SHORT byte_align_copy
 	byte_align_copy_end:
 
