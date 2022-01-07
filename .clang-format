@@ -21,7 +21,7 @@ AlignTrailingComments: false
 AllowAllParametersOfDeclarationOnNextLine: false
 AllowShortBlocksOnASingleLine: false
 AllowShortCaseLabelsOnASingleLine: false
-AllowShortFunctionsOnASingleLine: None
+AllowShortFunctionsOnASingleLine: Empty
 AllowShortIfStatementsOnASingleLine: false
 AllowShortLoopsOnASingleLine: false
 AlwaysBreakAfterDefinitionReturnType: None
@@ -43,18 +43,18 @@ BraceWrapping:
   BeforeCatch: false
   BeforeElse: false
   IndentBraces: false
-  SplitEmptyFunction: true # Unknown to clang-format-4.0
+  SplitEmptyFunction: false # Unknown to clang-format-4.0
   SplitEmptyRecord: true # Unknown to clang-format-4.0
   SplitEmptyNamespace: true # Unknown to clang-format-4.0
 BreakBeforeBinaryOperators: None
-BreakBeforeBraces: Custom
+BreakBeforeBraces: Linux
 BreakBeforeInheritanceComma: false # Unknown to clang-format-4.0
 BreakBeforeTernaryOperators: false
 BreakConstructorInitializersBeforeComma: false
 BreakConstructorInitializers: BeforeComma # Unknown to clang-format-4.0
 BreakAfterJavaFieldAnnotations: false
-BreakStringLiterals: false
-ColumnLimit: 80
+BreakStringLiterals: true
+ColumnLimit: 79
 CommentPragmas: '^ IWYU pragma:'
 CompactNamespaces: false # Unknown to clang-format-4.0
 ConstructorInitializerAllOnOneLineOrOnePerLine: false
@@ -97,8 +97,11 @@ PenaltyExcessCharacter: 100
 PenaltyReturnTypeOnItsOwnLine: 60
 
 PointerAlignment: Right
-ReflowComments: false
-SortIncludes: false
+#QualifierAlignment: Custom # Only in clang-format-14.0 and above
+#QualifierOrder: ['volatile', 'const', 'constexpr', 'static', 'inline', 'type', 'restrict'] # Only in clang-format-14.0 and above
+#ReferenceAlignment: Pointer # Only in clang-format-14.0 and above
+ReflowComments: true
+SortIncludes: true
 SortUsingDeclarations: false # Unknown to clang-format-4.0
 SpaceAfterCStyleCast: false
 SpaceAfterTemplateKeyword: true
@@ -114,7 +117,8 @@ SpacesInContainerLiterals: false
 SpacesInCStyleCastParentheses: false
 SpacesInParentheses: false
 SpacesInSquareBrackets: false
-Standard: Cpp03
+Standard: Latest
 TabWidth: 8
 UseTab: Always
 ...
+

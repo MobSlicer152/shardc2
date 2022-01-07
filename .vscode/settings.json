@@ -7,20 +7,6 @@
 		"_X86_64"
 	],
 	"files.associations": {
-		"wchar.h": "c",
-		"stdint.h": "c",
-		"stddef.h": "c",
-		"corecrt.h": "c",
-		"vcruntime.h": "c",
-		"defs.h": "c",
-		"phnt_windows.h": "c",
-		"ldr.h": "c",
-		"stdlib.h": "c",
-		"crt0.h": "c",
-		"windows.h": "c",
-		"compiler_fixups.h": "c",
-		"string.h": "c",
-		"phnt.h": "c",
-		"stdbool.h": "c"
+		"*.h": "c"
 	}
 }
