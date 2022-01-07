@@ -1,6 +1,6 @@
 ;  Miscellaneous assembly definitions for Linux
 ;
-;  Copyright 2021 MobSlicer152
+;  Copyright 2022 MobSlicer152
 ;
 ;  Licensed under the Apache License, Version 2.0 (the "License");
 ;  you may not use this file except in compliance with the License.
@@ -21,3 +21,4 @@ struc __cpu_features
 	.is_it_hammer_time resb 1
 endstruc
 
+extern __features

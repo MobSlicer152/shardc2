@@ -1,6 +1,6 @@
 ;  MASM memcpy implementation for x86
 ;
-;  Copyright 2021 MobSlicer152
+;  Copyright 2022 MobSlicer152
 ;
 ;  Licensed under the Apache License, Version 2.0 (the "License");
 ;  you may not use this file except in compliance with the License.
@@ -18,9 +18,6 @@ OPTION PROLOGUE:NONE
 
 .data
 INCLUDE internal/win32/asmdefs.asm
-
-; Detected features from mainCRTStartup
-EXTERN __features:__cpu_features
 
 .code
 

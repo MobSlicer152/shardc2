@@ -1,6 +1,6 @@
 ;  Linux version of memset
 ;
-;  Copyright 2021 MobSlicer152
+;  Copyright 2022 MobSlicer152
 ;
 ;  Licensed under the Apache License, Version 2.0 (the "License");
 ;  you may not use this file except in compliance with the License.
@@ -16,9 +16,6 @@
 
 BITS 64
 DEFAULT REL
-
-; Detected CPU features
-EXTERN __features
 
 SECTION .rodata
 

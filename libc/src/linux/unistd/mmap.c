@@ -1,6 +1,6 @@
 // mmap and related functions
 //
-// copyright 2021 mobslicer152
+// copyright 2022 mobslicer152
 // this file is part of shard c library 2
 //
 // licensed under the apache license, version 2.0 (the "license");

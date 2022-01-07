@@ -1,6 +1,6 @@
 // Functions for loading functions using the dynamic linker
 //
-// Copyright 2021 MobSlicer152
+// Copyright 2022 MobSlicer152
 // This file is part of Shard C Library 2
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -70,6 +70,9 @@ _LIBC_DLLSYM long (*__NtQuerySystemInformation)(
 	SYSTEM_INFORMATION_CLASS info_type, void *info,
 	uint32_t info_buffer_size, uint32_t *info_size);
 _LIBC_DLLSYM long (*__NtTerminateProcess)(uintptr_t handle, uint32_t status);
+_LIBC_DLLSYM long (*__NtWriteFile)(uint64_t handle, uint64_t event,
+		void *unused, void *unused2, IO_STATUS_BLOCK *io_stat,
+		void *buf, uint32_t len, void *unused3, void *unused4);
 
 _LIBC_DLLSYM void *(*__LocalFree)(void *chunk);
 

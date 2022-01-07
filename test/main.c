@@ -1,6 +1,6 @@
 // Tests the entry point and the calling of the main function
 //
-// Copyright 2021 MobSlicer152
+// Copyright 2022 MobSlicer152
 // This file is part of Shard C Library 2
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -33,8 +33,8 @@ int main(int argc, char *argv[])
 
 #ifdef __linux__
 	for (int i = 0; i < argc; i++) {
-		__syscall(__NR_write, 1, argv[i], strlen(argv[i]));
-		__syscall(__NR_write, 1, "\n", 1);
+		write(1, argv[i], strlen(argv[i]));
+		write(1, "\n", 1);
 	}
 #endif
 

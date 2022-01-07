@@ -19,7 +19,7 @@ BEGIN
             VALUE "FileDescription", "Shard C Library 2"
             VALUE "FileVersion", "1.0.0.0"
             VALUE "InternalName", "libc.dll"
-            VALUE "LegalCopyright", "Copyright (C) 2021 MobSlicer152"
+            VALUE "LegalCopyright", "Copyright (C) 2022 MobSlicer152"
             VALUE "OriginalFilename", "libc.dll"
             VALUE "ProductName", "Shard C Library 2"
             VALUE "ProductVersion", "1.0.0.0"

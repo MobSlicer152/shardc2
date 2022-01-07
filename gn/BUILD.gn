@@ -1,6 +1,6 @@
 #  Default toolchain flags
 #
-#  Copyright 2021 MobSlicer152
+#  Copyright 2022 MobSlicer152
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -24,7 +24,7 @@ config("compiler_defaults") {
       "-Wextra",
       "-std=c2x",
     ]
-    ldflags = [ "-nostdlib" ]
+    ldflags = [ "-nostdlib", "-Wl,-z,notext" ]
   } else if (is_win) {
     asmflags = [
       "/Cp",

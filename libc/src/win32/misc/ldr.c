@@ -1,7 +1,7 @@
 // Interface for the Windows dynamic linker, and a function to
 // load functions the library makes use of
 //
-// Copyright 2021 MobSlicer152
+// Copyright 2022 MobSlicer152
 // This file is part of Shard C Library 2
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -53,6 +53,9 @@ _LIBC_DLLSYM long (*__NtQuerySystemInformation)(
 	uint32_t info_buffer_size, uint32_t *info_size) = 0;
 _LIBC_DLLSYM long (*__NtTerminateProcess)(uintptr_t handle,
 					  uint32_t status) = 0;
+_LIBC_DLLSYM long (*__NtWriteFile)(uint64_t handle, uint64_t event,
+		void *unused, void *unused2, IO_STATUS_BLOCK *io_stat,
+		void *buf, uint32_t len, void *unused3, void *unused4) = 0;
 
 _LIBC_DLLSYM void *(*__LocalFree)(void *chunk) = 0;
 
@@ -110,6 +113,7 @@ _LIBC_DLLSYM void __load_lib_dep_funcs(PEB *peb)
 		__load_symbol(__ntdll, edt, "NtQuerySystemInformation");
 	__NtTerminateProcess =
 		__load_symbol(__ntdll, edt, "NtTerminateProcess");
+	__NtWriteFile = __load_symbol(__ntdll, edt, "NtWriteFile");
 
 	// Get kernel32's base address
 	__LdrLoadDll(NULL, NULL,
@@ -128,26 +132,34 @@ _LIBC_DLLSYM void __load_lib_dep_funcs(PEB *peb)
 		__load_symbol(__shell32, __get_export_dir(__shell32), "CommandLineToArgvW");
 }
 
-static uint32_t symbol_cmp(const void *guess, const void **key)
-{
-	void *base = key[0];
-	const char *name = key[1];
-}
-
 _LIBC_DLLSYM uint32_t __get_symbol_ordinal(void *base,
 					   IMAGE_EXPORT_DIRECTORY *edt,
 					   const char *name)
 {
-	uint32_t *npt;
-	uint32_t *ord;
+		uint32_t *npt;
+	int cmp;
+	uint32_t max;
+	uint32_t mid;
+	uint32_t min;
 
 	// Get the name pointer table and export ordinal table
 	npt = (uint32_t *)((uint8_t *)base + edt->AddressOfNames);
 
-	// Call bsearch
-	void *key[] = { base, name };
-	ord = (uint32_t *)bsearch(key, npt, edt->NumberOfNames,
-				  sizeof(uint32_t), symbol_cmp);
+	// Do a binary search for the function
+	min = 0;
+	max = edt->NumberOfNames - 1;
+	while (min <= max) {
+		mid = (min + max) >> 1;
+		cmp = strcmp((const char *)((uint8_t *)base + npt[mid]), name);
+		if (cmp < 0)
+			min = mid + 1;
+		else if (cmp > 0)
+			max = mid - 1;
+		else
+			return mid + edt->Base + 1;
+	}
+
+	return UINT32_MAX;
 }
 
 _LIBC_DLLSYM IMAGE_EXPORT_DIRECTORY *__get_export_dir(void *base)

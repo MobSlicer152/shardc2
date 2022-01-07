@@ -1,4 +1,4 @@
-// mmap abstraction for malloc
+// write
 //
 // copyright 2022 mobslicer152
 // this file is part of shard c library 2
@@ -15,28 +15,14 @@
 // see the license for the specific language governing permissions and
 // limitations under the license.
 
-#include "internal/crt0.h"
-
-#include "sys/mman.h"
-#include "stdint.h"
 #include "unistd.h"
 
-_LIBC_DLLSYM void *__alloc(size_t *size)
+_LIBC_DLLSYM size_t write(__register_size_t handle, void *buf, size_t len)
 {
-	uint8_t *ret;
+	IO_STATUS_BLOCK io_stat;
 
-	// mmap
-	ret = mmap(NULL, *size, PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
-	if (ret == MAP_FAILED || ((int64_t)ret < 0 && (int64_t)ret > -4096)) {
-		*size = 0;
-		ret = NULL;
-	}
+	__NtWriteFile(handle, NULL, NULL, NULL, &io_stat, buf, len, NULL, NULL);
 
-	return ret;
-}
-
-_LIBC_DLLSYM void __free(void *chunk, size_t size)
-{
-	munmap(chunk, size);
+	return io_stat.Information;
 }
 

@@ -1,6 +1,6 @@
 #  Target definition of the main library
 #
-#  Copyright 2021 MobSlicer152
+#  Copyright 2022 MobSlicer152
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -85,7 +85,8 @@ shared_library("c") {
       "src/linux/startup/init.c",
       "src/linux/stdlib/exit.c",
       "src/linux/stdlib/mem.c",
-      "src/linux/unistd/mmap.c"
+      "src/linux/unistd/mmap.c",
+      "src/linux/unistd/write.c"
     ]
   }
 
@@ -101,7 +102,7 @@ shared_library("c") {
         "src/string/x86_64/memcpy.asm",
         "src/string/x86_64/memset.asm",
         "src/win32/unistd/x86_64/syscall.asm",
-        "src/win32/unistd/x86_64/syscall.c",
+        "src/win32/unistd/x86_64/syscall_util.c",
       ]
     } else if (is_linux) {
       sources += [

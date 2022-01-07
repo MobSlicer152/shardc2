@@ -1,6 +1,6 @@
 ;  MASM assembly versions of some structures
 ; 
-;  Copyright 2021 MobSlicer152
+;  Copyright 2022 MobSlicer152
 ; 
 ;  Licensed under the Apache License, Version 2.0 (the "License");
 ;  you may not use this file except in compliance with the License.
@@ -21,3 +21,6 @@ __cpu_features STRUCT
 	_rdrand BYTE ?
 	is_it_hammer_time BYTE ?
 __cpu_features ENDS
+
+; Detected features from mainCRTStartup
+EXTERN __features:__cpu_features
